@@ -1,0 +1,213 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Groups</title>
+    <!--/*/ <th:block th:include="fragments/general.html :: headerfiles">
+            </th:block> /*/-->
+    <link rel="stylesheet" th:href="@{css/groupsPage.css}">
+    <div th:insert="fragments/general.html :: gitlabToken"></div>
+</head>
+<body style="overflow:hidden">
+<header th:insert="fragments/general.html :: header"></header>
+<section>
+    <div class='ui-widget-header' style="display: none"></div>
+    <div class="createGroupButtonDiv">
+        <a th:if="${userCanEdit == true}" class="btn btn-primary" th:href="@{groupsCreate}">Create New Group</a>
+    </div>
+    <div class="groupRow">
+        <div class="scrollableGroupOverview groupsColLeft">
+            <div id="groupAmountOptionsTop" class="groupAmountOptions">
+                <div class="groupSelectors">
+                    <div id="groupAmountSelectorDivTop" class="groupAmountSelectorDiv">
+                        <label for="groupDisplayAmountSelection" class="form-label labelForGroupDisplayAmount">Display amount</label>
+                        <select class="form-select small-options" id="groupDisplayAmountSelection" aria-label="Select the amount of groups to display">
+                            <option class="optionForAmountOfGroups">10</option>
+                            <option class="optionForAmountOfGroups">20</option>
+                            <option class="optionForAmountOfGroups">40</option>
+                            <option class="optionForAmountOfGroups">60</option>
+                            <option class="optionForAmountOfGroups">All</option>
+                        </select>
+                    </div>
+                    <div id="groupSortBySelectorDiv" class="groupAmountSelectorDiv">
+                        <label for="groupSortBySelector" class="form-label labelForGroupDisplayAmount">Sort</label>
+                        <select class="form-select small-options" id="groupSortBySelector" aria-label="Sort the groups by">
+                            <option class="optionForAmountOfGroups">Short Name Asc</option>
+                            <option class="optionForAmountOfGroups">Short Name Desc</option>
+                            <option class="optionForAmountOfGroups">Long Name Asc</option>
+                            <option class="optionForAmountOfGroups">Long Name Desc</option>
+                        </select>
+                    </div>
+                </div>
+                <nav aria-label="Group pagination selector">
+                    <ul class="pagination groupPaginationSelector">
+                        <li class="page-item groupFooterFirst groupPageLink specialFooterButton"><a class="page-link">First</a></li>
+                        <li class="page-item groupFooterPrevious groupPageLink specialFooterButton"><a class="page-link ">Previous</a></li>
+                        <li class="page-item groupFooterNext groupPageLink specialFooterButton"><a class="page-link">Next</a></li>
+                        <li class="page-item groupFooterLast groupPageLink specialFooterButton"><a class="page-link">Last</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div id="groupListDiv">
+            </div>
+        </div>
+        <div class="groupsColRight" id="groupInformationContainer" style="display: none">
+            <div class="scrollableGroupDetails">
+                <div class="controlButtons">
+                    <button type="button" class="editButton noStyleButton marginSides1" data-bs-toggle="tooltip"
+                            data-bs-placement="top" title="Edit Group" id="editGroupNameButton" style="display: none">
+                        <span th:insert="fragments/icons.html :: editIcon"></span>
+                    </button>
+                    <button type="button" class="deleteButton noStyleButton hasTeacherOrAbove"  data-bs-toggle="tooltip" data-bs-placement="top" title="Delete Group">
+                        <span th:insert="fragments/icons.html :: deleteIcon"></span>
+                    </button>
+                </div>
+                <p id="groupBeingDisplayId" style="display: none"></p>
+                <h2 id="groupInformationShortName" class="showExtraWhitespace"></h2>
+                <h3 id="groupInformationLongName" class="showExtraWhitespace"></h3>
+                <div id="groupEditInfo">
+                    <form id="editGroupForm" class="marginSides1">
+                        <div class="mb-1" id="editShortNameInput">
+                            <label class="form-label" for="groupShortName">Short Name:</label>
+                            <input type="text" id="groupShortName" class="form-control canDisable" maxlength=50 required>
+                            <small class="form-text-counted text-muted countChar">0 characters remaining</small>
+                        </div>
+                        <div class="mb-1">
+                            <label class="form-label" for="groupLongName">Long Name:</label>
+                            <input type="text" id="groupLongName" class="form-control canDisable" maxlength=100 required>
+                            <small class="form-text-counted text-muted countChar">0 characters remaining</small>
+                        </div>
+                        <div class="mb-3 mt-3">
+                            <button type="submit" class="btn btn-primary">Save</button>
+                            <button type="button" class="btn btn-secondary cancelGroupEdit" >Cancel</button>
+                        </div>
+                    </form>
+                </div>
+                <hr>
+                <ul class="nav nav-tabs mb-3" id="pillsTab" role="tablist">
+                    <li id="groupUsersTab" class="nav-item" role="presentation">
+                        <button aria-controls="pillsUsers" aria-selected="true" class="nav-link active"
+                                data-bs-target="#pillsUsers" data-bs-toggle="pill" id="pillsUsersTab" role="tab"
+                                type="button">Users
+                        </button>
+                    </li>
+                    <li id="groupSettingsTab" class="nav-item" role="presentation" style="display: none">
+                        <button aria-controls="pillsSettings" aria-selected="false" class="nav-link"
+                                data-bs-target="#pillsSettings" data-bs-toggle="pill" id="pillsSettingsTab" role="tab"
+                                type="button">Repository
+                        </button>
+                    </li>
+                </ul>
+                <div class="tab-content" id="pillsTabContent">
+                    <div id="pillsUsers" aria-labelledby="pillsUsersTab" class="tab-pane fade show active"
+                         role="tabpanel">
+                        <div id="groupDisplayOptions">
+                            <label for="membersPerPageSelect">Members per page</label>
+                            <select id="membersPerPageSelect" class="form-select formSelectShort" name="membersPerPage">
+                                <option value="10">10</option>
+                                <option value="20">20</option>
+                                <option value="40">40</option>
+                                <option value="60" >60</option>
+                                <option value="999999999999">All</option>
+                            </select>
+                            <button id="groupRemoveUser" class="btn btn-danger hasTeacherOrAbove" style="display: none">Remove User</button>
+                            <hr>
+                        </div>
+                        <div class="membersContainer"></div>
+                        <div id="groupMembersAmountOptionsTop" class="groupAmountOptions groupMembersAmountOptions">
+                            <nav aria-label="Group Members pagination selector">
+                                <ul class="pagination groupMembersPaginationSelector">
+                                    <li class="page-item groupFooterFirst groupPageLink specialFooterButton"><a class="page-link">First</a></li>
+                                    <li class="page-item groupFooterPrevious groupPageLink specialFooterButton"><a class="page-link ">Previous</a></li>
+                                    <li class="page-item groupFooterNext groupPageLink specialFooterButton"><a class="page-link">Next</a></li>
+                                    <li class="page-item groupFooterLast groupPageLink specialFooterButton"><a class="page-link">Last</a></li>
+                                </ul>
+                            </nav>
+                        </div>
+                        <table id="groupTable" class="table">
+                            <thead>
+                            <tr class="tableHeader">
+
+                                <th scope="col">Id</th>
+                                <th scope="col">Image</th>
+                                <th scope="col">First</th>
+                                <th scope="col">Last</th>
+                                <th scope="col">Username</th>
+                            </tr>
+                            </thead>
+                            <tbody id="groupTableBody"></tbody>
+                        </table>
+                        <div id="groupMembersAmountOptionsBottom" class="groupAmountOptions groupMembersAmountOptions">
+                            <nav aria-label="Group Members pagination selector">
+                                <ul class="pagination groupMembersPaginationSelector">
+                                    <li class="page-item groupFooterFirst groupPageLink specialFooterButton"><a class="page-link">First</a></li>
+                                    <li class="page-item groupFooterPrevious groupPageLink specialFooterButton"><a class="page-link ">Previous</a></li>
+                                    <li class="page-item groupFooterNext groupPageLink specialFooterButton"><a class="page-link">Next</a></li>
+                                    <li class="page-item groupFooterLast groupPageLink specialFooterButton"><a class="page-link">Last</a></li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                    <div id="pillsSettings" aria-labelledby="pillsSettingsTab" class="tab-pane fade" role="tabpanel">
+                        <div id="groupSettingsPage">
+                            <div id="gitRepo"></div>
+                            <div id="groupSettingsCommitSection">
+                                <h5>Recent Commits:</h5>
+                                <div id="groupSettingsCommitContainer" class="marginSides1">
+                                    <div class="gitCommitInfo">
+                                        <div class="row">
+                                            <div class="inlineText">
+                                                <p>Commit:&nbsp;</p>
+                                                <p class="greyText">commit code here</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <p>This is the paragraph to display the commit message. It is longer than the page allows for to text that text wrapping works as expected</p>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col">
+                                                <p class="greyText">Sam Clark</p>
+                                            </div>
+                                            <div class="col">
+                                            <p class="greyText">27/07/2022 3:44:53 pm</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="gitCommitInfo">
+                                        <div class="row">
+                                            <div class="inlineText">
+                                                <p>Commit:&nbsp;</p>
+                                                <p class="greyText">commit code here</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <p>This is the paragraph to display the commit message. It is longer than the page allows for to text that text wrapping works as expected</p>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col">
+                                                <p class="greyText">Sam Clark</p>
+                                            </div>
+                                            <div class="col">
+                                                <p class="greyText">27/07/2022 3:44:53 pm</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div>
+    <svg class="waveBackground" viewBox="0 0 3840 2160" width="3840" height="2160" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="3840" height="2160" fill="#001220"></rect><path d="M0 1584L64 1554.7C128 1525.3 256 1466.7 384 1431.7C512 1396.7 640 1385.3 768 1413.5C896 1441.7 1024 1509.3 1152 1505.8C1280 1502.3 1408 1427.7 1536 1405.2C1664 1382.7 1792 1412.3 1920 1474.7C2048 1537 2176 1632 2304 1621.2C2432 1610.3 2560 1493.7 2688 1499.2C2816 1504.7 2944 1632.3 3072 1686.7C3200 1741 3328 1722 3456 1703.3C3584 1684.7 3712 1666.3 3776 1657.2L3840 1648L3840 2161L3776 2161C3712 2161 3584 2161 3456 2161C3328 2161 3200 2161 3072 2161C2944 2161 2816 2161 2688 2161C2560 2161 2432 2161 2304 2161C2176 2161 2048 2161 1920 2161C1792 2161 1664 2161 1536 2161C1408 2161 1280 2161 1152 2161C1024 2161 896 2161 768 2161C640 2161 512 2161 384 2161C256 2161 128 2161 64 2161L0 2161Z" fill="#e9c46a"></path><path d="M0 1764L64 1718.8C128 1673.7 256 1583.3 384 1579.7C512 1576 640 1659 768 1703.5C896 1748 1024 1754 1152 1742.3C1280 1730.7 1408 1701.3 1536 1695.8C1664 1690.3 1792 1708.7 1920 1690.5C2048 1672.3 2176 1617.7 2304 1573.7C2432 1529.7 2560 1496.3 2688 1522.5C2816 1548.7 2944 1634.3 3072 1655C3200 1675.7 3328 1631.3 3456 1639.7C3584 1648 3712 1709 3776 1739.5L3840 1770L3840 2161L3776 2161C3712 2161 3584 2161 3456 2161C3328 2161 3200 2161 3072 2161C2944 2161 2816 2161 2688 2161C2560 2161 2432 2161 2304 2161C2176 2161 2048 2161 1920 2161C1792 2161 1664 2161 1536 2161C1408 2161 1280 2161 1152 2161C1024 2161 896 2161 768 2161C640 2161 512 2161 384 2161C256 2161 128 2161 64 2161L0 2161Z" fill="#acb764"></path><path d="M0 1656L64 1661.2C128 1666.3 256 1676.7 384 1665.7C512 1654.7 640 1622.3 768 1640.8C896 1659.3 1024 1728.7 1152 1722.3C1280 1716 1408 1634 1536 1645.7C1664 1657.3 1792 1762.7 1920 1801.3C2048 1840 2176 1812 2304 1800.8C2432 1789.7 2560 1795.3 2688 1785.8C2816 1776.3 2944 1751.7 3072 1762.5C3200 1773.3 3328 1819.7 3456 1804.5C3584 1789.3 3712 1712.7 3776 1674.3L3840 1636L3840 2161L3776 2161C3712 2161 3584 2161 3456 2161C3328 2161 3200 2161 3072 2161C2944 2161 2816 2161 2688 2161C2560 2161 2432 2161 2304 2161C2176 2161 2048 2161 1920 2161C1792 2161 1664 2161 1536 2161C1408 2161 1280 2161 1152 2161C1024 2161 896 2161 768 2161C640 2161 512 2161 384 2161C256 2161 128 2161 64 2161L0 2161Z" fill="#75a56a"></path><path d="M0 1854L64 1824.7C128 1795.3 256 1736.7 384 1725.7C512 1714.7 640 1751.3 768 1780.2C896 1809 1024 1830 1152 1810.5C1280 1791 1408 1731 1536 1697C1664 1663 1792 1655 1920 1697.7C2048 1740.3 2176 1833.7 2304 1843.2C2432 1852.7 2560 1778.3 2688 1737C2816 1695.7 2944 1687.3 3072 1679.5C3200 1671.7 3328 1664.3 3456 1686.3C3584 1708.3 3712 1759.7 3776 1785.3L3840 1811L3840 2161L3776 2161C3712 2161 3584 2161 3456 2161C3328 2161 3200 2161 3072 2161C2944 2161 2816 2161 2688 2161C2560 2161 2432 2161 2304 2161C2176 2161 2048 2161 1920 2161C1792 2161 1664 2161 1536 2161C1408 2161 1280 2161 1152 2161C1024 2161 896 2161 768 2161C640 2161 512 2161 384 2161C256 2161 128 2161 64 2161L0 2161Z" fill="#488f70"></path><path d="M0 1896L64 1892.5C128 1889 256 1882 384 1879.5C512 1877 640 1879 768 1886.2C896 1893.3 1024 1905.7 1152 1913.5C1280 1921.3 1408 1924.7 1536 1916.3C1664 1908 1792 1888 1920 1872.3C2048 1856.7 2176 1845.3 2304 1851.2C2432 1857 2560 1880 2688 1895C2816 1910 2944 1917 3072 1915C3200 1913 3328 1902 3456 1900.8C3584 1899.7 3712 1908.3 3776 1912.7L3840 1917L3840 2161L3776 2161C3712 2161 3584 2161 3456 2161C3328 2161 3200 2161 3072 2161C2944 2161 2816 2161 2688 2161C2560 2161 2432 2161 2304 2161C2176 2161 2048 2161 1920 2161C1792 2161 1664 2161 1536 2161C1408 2161 1280 2161 1152 2161C1024 2161 896 2161 768 2161C640 2161 512 2161 384 2161C256 2161 128 2161 64 2161L0 2161Z" fill="#297770"></path><path d="M0 1909L64 1920.2C128 1931.3 256 1953.7 384 1974.7C512 1995.7 640 2015.3 768 1996.5C896 1977.7 1024 1920.3 1152 1917.2C1280 1914 1408 1965 1536 1976.3C1664 1987.7 1792 1959.3 1920 1962.7C2048 1966 2176 2001 2304 2002.7C2432 2004.3 2560 1972.7 2688 1970.3C2816 1968 2944 1995 3072 1989.2C3200 1983.3 3328 1944.7 3456 1918.7C3584 1892.7 3712 1879.3 3776 1872.7L3840 1866L3840 2161L3776 2161C3712 2161 3584 2161 3456 2161C3328 2161 3200 2161 3072 2161C2944 2161 2816 2161 2688 2161C2560 2161 2432 2161 2304 2161C2176 2161 2048 2161 1920 2161C1792 2161 1664 2161 1536 2161C1408 2161 1280 2161 1152 2161C1024 2161 896 2161 768 2161C640 2161 512 2161 384 2161C256 2161 128 2161 64 2161L0 2161Z" fill="#215e66"></path><path d="M0 2066L64 2063.5C128 2061 256 2056 384 2048.8C512 2041.7 640 2032.3 768 2028C896 2023.7 1024 2024.3 1152 2024.5C1280 2024.7 1408 2024.3 1536 2030.7C1664 2037 1792 2050 1920 2042.3C2048 2034.7 2176 2006.3 2304 2009.2C2432 2012 2560 2046 2688 2047.3C2816 2048.7 2944 2017.3 3072 2017.5C3200 2017.7 3328 2049.3 3456 2062.7C3584 2076 3712 2071 3776 2068.5L3840 2066L3840 2161L3776 2161C3712 2161 3584 2161 3456 2161C3328 2161 3200 2161 3072 2161C2944 2161 2816 2161 2688 2161C2560 2161 2432 2161 2304 2161C2176 2161 2048 2161 1920 2161C1792 2161 1664 2161 1536 2161C1408 2161 1280 2161 1152 2161C1024 2161 896 2161 768 2161C640 2161 512 2161 384 2161C256 2161 128 2161 64 2161L0 2161Z" fill="#264653"></path></svg>
+</div>
+</body>
+<script th:src="@{js/groups.js}" type="application/javascript"></script>
+<script th:src="@{js/repos.js}" type="application/javascript"></script>
+<script th:src="@{js/gitlabAPI.js}" type="application/javascript"></script>
+<script th:src="@{js/notifications.js}" type="application/javascript"></script>
+
+</html>

@@ -1,0 +1,59 @@
+/*Calendar*/
+
+.calendar, .calendarDetails {
+    width: 60em;
+}
+
+.calendarDetails{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 70rem;
+    margin-top: 4rem;
+    padding: 2rem;
+    background-color: var(--background-colour-offblue);
+    border-radius: var(--border-radius);
+}
+.fc-event-title {
+    display: none;
+}
+
+.fc-event-skin {
+
+}
+
+.fc-daygrid-event-harness {
+    margin-top: 0 !important;
+    top: 0 !important;
+}
+
+.milestoneCalendar, .deadlineCalendar, .eventCalendar {
+    background: var(--background-colour-offblue);
+    border-color: var(--background-colour-darkBlue);
+    position: absolute;
+    width: 30px;
+    height: 18px;
+    line-height: 17px;
+    left: 0;
+}
+
+.milestoneCalendar {
+    bottom: -44px;
+}
+
+.deadlineCalendar {
+    bottom: -61.5px;
+}
+
+.eventCalendar {
+    bottom: -77px;
+}
+
+.calendarOccasion {
+    color: black;
+}
+
+.calendar table{ !important;
+
+}

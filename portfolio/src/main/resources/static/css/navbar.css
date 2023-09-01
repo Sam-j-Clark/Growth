@@ -1,0 +1,118 @@
+.profileNav {
+
+}
+.navButtonsDiv {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: row;
+}
+
+.navItem a {
+    text-decoration: none;
+    color: #DBECE9;
+}
+
+.navItem{
+    text-align: center;
+    height: 4rem;
+    width: 8rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    will-change: transform;
+    transition: transform 250ms ease-out;
+}
+
+.navItem i{
+    padding-right: 0.5rem;
+}
+
+
+
+.navItem:hover a, .navItem:hover i{
+    color: black;
+}
+
+.navItem:hover{
+    background-color: #DBECE9;
+    cursor: pointer;
+    transform: translateY(3px);
+}
+
+.headerBar {
+    font-family: 'Roboto', sans-serif;
+    top: 0;
+    z-index: 4;
+    position: fixed;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #001220;
+    overflow: visible;
+    height: 4rem;
+    width: 100%;
+    box-shadow: rgba(60, 64, 67, 0.3) 0 1px 2px 0, rgba(60, 64, 67, 0.15) 0 1px 3px 1px;
+    color: white;
+}
+
+
+/* properties of the dropdown 'zone' */
+.profileDropdown {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    min-width: 10rem;
+    margin: 0.1rem;
+    border-radius: var(--border-radius);
+}
+
+.profileDropdown:hover {
+    cursor: pointer;
+    background-color: #17181a;
+}
+
+.profileDropdown p {
+    font-size: 1.25rem;
+    height: 1rem;
+    font-weight: normal;
+    padding: 0 .5rem;
+}
+
+.profileDropdown img {
+    height: 2.5rem;
+}
+
+.username {
+    font-weight: bold;
+}
+
+.dropdown-content {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    box-shadow: rgba(60, 64, 67, 0.3) 0 1px 2px 0, rgba(60, 64, 67, 0.15) 0 1px 3px 1px;
+    z-index: 1;
+    background-color: #17181a;
+    width: 10rem;
+}
+
+.dropdown-content a {
+    text-decoration: none;
+    width: 100%;
+    text-align: center;
+    color: #f9f9f9;
+    padding: 0.25rem;
+}
+
+.dropdown-content a:hover {
+    background-color: #626262;
+}
+
+.logoHeader{
+    font-size: 2rem;
+    padding: 0 0.5rem 0 1rem;
+}
+

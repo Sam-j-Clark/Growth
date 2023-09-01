@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+
+    <meta charset="UTF-8">
+    <title>Users</title>
+    <!--Make sure to change the below title    -->
+
+    <!--/*/ <th:block th:include="fragments/general.html :: headerfiles">
+            </th:block> /*/-->
+    <link rel="stylesheet" th:href="@{css/userListPage.css}">
+</head>
+<body>
+    <header th:insert="fragments/general.html :: header"> </header>
+    <section>
+        <div class="listTableDiv">
+            <h1 class="title">Users</h1>
+            <form action="" class="groupAmountSelectorDivUserList">
+                <label for="usersPerPageSelect" class="form-label">Users per page</label>
+                <select id="usersPerPageSelect" name="usersPerPage" class="form-select userListAmount">
+                    <option value="10" th:selected="${'10'== selectedUsersPerPage}">10</option>
+                    <option value="20" th:selected="${'20'== selectedUsersPerPage}">20</option>
+                    <option value="40" th:selected="${'40'== selectedUsersPerPage}">40</option>
+                    <option value="60" th:selected="${'60'== selectedUsersPerPage}">60</option>
+                    <option value="all" th:selected="${'999999999'== selectedUsersPerPage}">All</option>
+                </select>
+            </form>
+            <div class="listTable" id="user-list">
+                <table class="tableStyled">
+                    <thead>
+                        <tr>
+                            <th class="tableHead">
+                                <div th:if="${sortOrder == 'firstname' and isAscending}">
+                                    <a th:href="@{'user-list?sortField=firstname&isAscending=false'}">First Name &#8593;</a>
+                                </div>
+                                <div th:if="${sortOrder == 'firstname' and !isAscending}">
+                                    <a th:href="@{'user-list?sortField=firstname&isAscending=true'}">First Name &#8595;</a>
+                                </div>
+                                <div th:if="${sortOrder != 'firstname'}">
+                                    <a th:href="@{'user-list?sortField=firstname&isAscending=true'}">First Name</a>
+                                </div>
+                            </th>
+                            <th class="tableHead">
+                                <div th:if="${sortOrder == 'middlename' and isAscending}">
+                                    <a th:href="@{'user-list?sortField=middlename&isAscending=false'}">Middle Name &#8593;</a>
+                                </div>
+                                <div th:if="${sortOrder == 'middlename' and !isAscending}">
+                                    <a th:href="@{'user-list?sortField=middlename&isAscending=true'}">Middle Name &#8595;</a>
+                                </div>
+                                <div th:if="${sortOrder != 'middlename'}">
+                                    <a th:href="@{'user-list?sortField=middlename&isAscending=true'}">Middle Name</a>
+                                </div>
+                            </th>
+                            <th class="tableHead">
+                                <div th:if="${sortOrder == 'lastname' and isAscending}">
+                                    <a th:href="@{'user-list?sortField=lastname&isAscending=false'}">Last Name &#8593;</a>
+                                </div>
+                                <div th:if="${sortOrder == 'lastname' and !isAscending}">
+                                    <a th:href="@{'user-list?sortField=lastname&isAscending=true'}">Last Name &#8595;</a>
+                                </div>
+                                <div th:if="${sortOrder != 'lastname'}">
+                                    <a th:href="@{'user-list?sortField=lastname&isAscending=true'}">Last Name</a>
+                                </div>
+                            </th>
+                            <th class="tableHead">
+                                <div th:if="${sortOrder == 'username' and isAscending}">
+                                    <a th:href="@{'user-list?sortField=username&isAscending=false'}">Username &#8593;</a>
+                                </div>
+                                <div th:if="${sortOrder == 'username' and !isAscending}">
+                                    <a th:href="@{'user-list?sortField=username&isAscending=true'}">Username &#8595;</a>
+                                </div>
+                                <div th:if="${sortOrder != 'username'}">
+                                    <a th:href="@{'user-list?sortField=username&isAscending=true'}">Username</a>
+                                </div>
+                            </th>
+                            <th class="tableHead">
+                                <div th:if="${sortOrder == 'aliases' and isAscending}">
+                                    <a th:href="@{'user-list?sortField=aliases&isAscending=false'}">Aliases &#8593;</a>
+                                </div>
+                                <div th:if="${sortOrder == 'aliases' and !isAscending}">
+                                    <a th:href="@{'user-list?sortField=aliases&isAscending=true'}">Aliases &#8595;</a>
+                                </div>
+                                <div th:if="${sortOrder != 'aliases'}">
+                                    <a th:href="@{'user-list?sortField=aliases&isAscending=true'}">Aliases</a>
+                                </div>
+                            </th>
+                            <th id="rolesHeader" class="tableHead">
+                                <div th:if="${sortOrder == 'roles' and isAscending}">
+                                    <a th:href="@{'user-list?sortField=roles&isAscending=false'}">Roles &#8593;</a>
+                                </div>
+                                <div th:if="${sortOrder == 'roles' and !isAscending}">
+                                    <a th:href="@{'user-list?sortField=roles&isAscending=true'}">Roles &#8595;</a>
+                                </div>
+                                <div th:if="${sortOrder != 'roles'}">
+                                    <a th:href="@{'user-list?sortField=roles&isAscending=true'}">Roles</a>
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="userRoleRow" th:each="paginatedUser : ${userList}">
+                            <td class="userId" style="display: none" th:text="${paginatedUser.id}"></td>
+                            <td th:text="${paginatedUser.firstName}">First Name</td>
+                            <td th:text="${paginatedUser.middleName}">Middle Name</td>
+                            <td th:text="${paginatedUser.lastName}">Last Name</td>
+                            <td class="username" th:text="${paginatedUser.username}">Username</td>
+                            <td th:text="${paginatedUser.nickname}">Nickname</td>
+                            <td class="roleButtonsContainer">
+                                <div class="badge border d-inline-flex align-items-center"
+                                     th:each="activeRole : ${paginatedUser.rolesList}">
+                                    <div class="tagDiv">
+                                        <div class=" text-black roleType" th:text="${activeRole}"></div>
+                                        <button class="btn-close roleDeleteButton" style="font-size: 0.75em;"
+                                                th:if="${userCanEdit and paginatedUser.rolesList.size() > 1}">
+                                        </button>
+                                    </div>
+                                </div>
+                                <div th:if="${userCanEdit and paginatedUser.rolesList.size() < 3}">
+                                    <button aria-expanded="true"
+                                            class="btn badge border text-light bg-primary addRolePopUpButton dropdown-toggle">+
+                                    </button>
+                                    <ul class="dropdown-menu collapse" data-popper-placement="bottom-start">
+                                        <button class="dropdown-item roleToAddButton" th:each="role : ${possibleRoles}"
+                                                th:if="${!paginatedUser.rolesList.contains(role)}" th:text="${role}"></button>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="panel-footer listTableFooter">
+                <nav aria-label="Page navigation">
+                    Total Items [[${totalItems}]] : Page [[${currentPage}]] of [[${totalPages}]]
+                    <span th:unless="${totalPages < 2}">
+                        &nbsp; &nbsp; - &nbsp;
+                        <a th:href="@{user-list?page=1}" th:if="${currentPage > 1}">First</a>
+                        <span th:unless="${currentPage > 1}">First</span>
+                        &nbsp;&nbsp;
+                        <a th:href="@{'user-list?page=' + ${currentPage - 1}}" th:if="${currentPage > 1}">Previous</a>
+                        <span th:unless="${currentPage > 1}">Previous</span>
+                        &nbsp;&nbsp;
+                        <span th:each="i: ${footerNumberSequence}">
+                        <a th:href="@{'user-list?page=' + ${i}}" th:if="${i != currentPage}">[[${i}]]</a>
+                        <span th:unless="${i != currentPage}">[[${i}]]</span>
+                        &nbsp; &nbsp;
+                        </span>
+                        <a th:href="@{'user-list?page=' + ${currentPage + 1}}" th:if="${currentPage < totalPages}">Next</a>
+                        <span th:unless="${currentPage < totalPages}">Next</span>
+                        &nbsp;&nbsp;
+                        <a th:href="@{'user-list?page=' + ${totalPages}}" th:if="${currentPage < totalPages}">Last</a>
+                        <span th:unless="${currentPage < totalPages}">Last</span>
+                    </span>
+                </nav>
+            </div>
+        </div>
+    </section>
+    <svg class="waveBackground" viewBox="0 0 3840 2160" width="3840" height="2160" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"><rect x="0" y="0" width="3840" height="2160" fill="#001220"></rect><path d="M0 1510L64 1527.8C128 1545.7 256 1581.3 384 1597.3C512 1613.3 640 1609.7 768 1547.5C896 1485.3 1024 1364.7 1152 1304.3C1280 1244 1408 1244 1536 1270.8C1664 1297.7 1792 1351.3 1920 1370.2C2048 1389 2176 1373 2304 1391.3C2432 1409.7 2560 1462.3 2688 1474.3C2816 1486.3 2944 1457.7 3072 1433.7C3200 1409.7 3328 1390.3 3456 1379.8C3584 1369.3 3712 1367.7 3776 1366.8L3840 1366L3840 2161L3776 2161C3712 2161 3584 2161 3456 2161C3328 2161 3200 2161 3072 2161C2944 2161 2816 2161 2688 2161C2560 2161 2432 2161 2304 2161C2176 2161 2048 2161 1920 2161C1792 2161 1664 2161 1536 2161C1408 2161 1280 2161 1152 2161C1024 2161 896 2161 768 2161C640 2161 512 2161 384 2161C256 2161 128 2161 64 2161L0 2161Z" fill="#264653"></path><path d="M0 1442L64 1455.7C128 1469.3 256 1496.7 384 1531C512 1565.3 640 1606.7 768 1633.3C896 1660 1024 1672 1152 1654.7C1280 1637.3 1408 1590.7 1536 1574C1664 1557.3 1792 1570.7 1920 1570.8C2048 1571 2176 1558 2304 1554.7C2432 1551.3 2560 1557.7 2688 1561.3C2816 1565 2944 1566 3072 1547.8C3200 1529.7 3328 1492.3 3456 1492.7C3584 1493 3712 1531 3776 1550L3840 1569L3840 2161L3776 2161C3712 2161 3584 2161 3456 2161C3328 2161 3200 2161 3072 2161C2944 2161 2816 2161 2688 2161C2560 2161 2432 2161 2304 2161C2176 2161 2048 2161 1920 2161C1792 2161 1664 2161 1536 2161C1408 2161 1280 2161 1152 2161C1024 2161 896 2161 768 2161C640 2161 512 2161 384 2161C256 2161 128 2161 64 2161L0 2161Z" fill="#215e66"></path><path d="M0 1749L64 1701.2C128 1653.3 256 1557.7 384 1561.5C512 1565.3 640 1668.7 768 1675.7C896 1682.7 1024 1593.3 1152 1576.3C1280 1559.3 1408 1614.7 1536 1626.3C1664 1638 1792 1606 1920 1574.3C2048 1542.7 2176 1511.3 2304 1505C2432 1498.7 2560 1517.3 2688 1538.8C2816 1560.3 2944 1584.7 3072 1620.3C3200 1656 3328 1703 3456 1704.7C3584 1706.3 3712 1662.7 3776 1640.8L3840 1619L3840 2161L3776 2161C3712 2161 3584 2161 3456 2161C3328 2161 3200 2161 3072 2161C2944 2161 2816 2161 2688 2161C2560 2161 2432 2161 2304 2161C2176 2161 2048 2161 1920 2161C1792 2161 1664 2161 1536 2161C1408 2161 1280 2161 1152 2161C1024 2161 896 2161 768 2161C640 2161 512 2161 384 2161C256 2161 128 2161 64 2161L0 2161Z" fill="#297770"></path><path d="M0 1842L64 1814.5C128 1787 256 1732 384 1696.5C512 1661 640 1645 768 1663.2C896 1681.3 1024 1733.7 1152 1743.8C1280 1754 1408 1722 1536 1713.2C1664 1704.3 1792 1718.7 1920 1723C2048 1727.3 2176 1721.7 2304 1722.3C2432 1723 2560 1730 2688 1723.7C2816 1717.3 2944 1697.7 3072 1692.3C3200 1687 3328 1696 3456 1726C3584 1756 3712 1807 3776 1832.5L3840 1858L3840 2161L3776 2161C3712 2161 3584 2161 3456 2161C3328 2161 3200 2161 3072 2161C2944 2161 2816 2161 2688 2161C2560 2161 2432 2161 2304 2161C2176 2161 2048 2161 1920 2161C1792 2161 1664 2161 1536 2161C1408 2161 1280 2161 1152 2161C1024 2161 896 2161 768 2161C640 2161 512 2161 384 2161C256 2161 128 2161 64 2161L0 2161Z" fill="#488f70"></path><path d="M0 1821L64 1806.8C128 1792.7 256 1764.3 384 1758.5C512 1752.7 640 1769.3 768 1789.3C896 1809.3 1024 1832.7 1152 1855.8C1280 1879 1408 1902 1536 1892C1664 1882 1792 1839 1920 1817.7C2048 1796.3 2176 1796.7 2304 1811.5C2432 1826.3 2560 1855.7 2688 1853.8C2816 1852 2944 1819 3072 1788.3C3200 1757.7 3328 1729.3 3456 1752.8C3584 1776.3 3712 1851.7 3776 1889.3L3840 1927L3840 2161L3776 2161C3712 2161 3584 2161 3456 2161C3328 2161 3200 2161 3072 2161C2944 2161 2816 2161 2688 2161C2560 2161 2432 2161 2304 2161C2176 2161 2048 2161 1920 2161C1792 2161 1664 2161 1536 2161C1408 2161 1280 2161 1152 2161C1024 2161 896 2161 768 2161C640 2161 512 2161 384 2161C256 2161 128 2161 64 2161L0 2161Z" fill="#75a56a"></path><path d="M0 1879L64 1873.5C128 1868 256 1857 384 1869.8C512 1882.7 640 1919.3 768 1937.8C896 1956.3 1024 1956.7 1152 1942C1280 1927.3 1408 1897.7 1536 1878C1664 1858.3 1792 1848.7 1920 1852.2C2048 1855.7 2176 1872.3 2304 1886.3C2432 1900.3 2560 1911.7 2688 1909.2C2816 1906.7 2944 1890.3 3072 1900.7C3200 1911 3328 1948 3456 1970.3C3584 1992.7 3712 2000.3 3776 2004.2L3840 2008L3840 2161L3776 2161C3712 2161 3584 2161 3456 2161C3328 2161 3200 2161 3072 2161C2944 2161 2816 2161 2688 2161C2560 2161 2432 2161 2304 2161C2176 2161 2048 2161 1920 2161C1792 2161 1664 2161 1536 2161C1408 2161 1280 2161 1152 2161C1024 2161 896 2161 768 2161C640 2161 512 2161 384 2161C256 2161 128 2161 64 2161L0 2161Z" fill="#acb764"></path><path d="M0 2067L64 2052.8C128 2038.7 256 2010.3 384 2005.5C512 2000.7 640 2019.3 768 2020.3C896 2021.3 1024 2004.7 1152 2001.2C1280 1997.7 1408 2007.3 1536 2005.2C1664 2003 1792 1989 1920 1979C2048 1969 2176 1963 2304 1972.5C2432 1982 2560 2007 2688 2005.5C2816 2004 2944 1976 3072 1979.3C3200 1982.7 3328 2017.3 3456 2025.5C3584 2033.7 3712 2015.3 3776 2006.2L3840 1997L3840 2161L3776 2161C3712 2161 3584 2161 3456 2161C3328 2161 3200 2161 3072 2161C2944 2161 2816 2161 2688 2161C2560 2161 2432 2161 2304 2161C2176 2161 2048 2161 1920 2161C1792 2161 1664 2161 1536 2161C1408 2161 1280 2161 1152 2161C1024 2161 896 2161 768 2161C640 2161 512 2161 384 2161C256 2161 128 2161 64 2161L0 2161Z" fill="#e9c46a"></path></svg>
+</body>
+<script th:src="@{js/notifications.js}" type="application/javascript"></script>
+<script th:src="@{js/user-list-script.js}" type="application/javascript"></script>
+</html>

@@ -1,0 +1,254 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Evidence</title>
+    <!--/*/ <th:block th:include="fragments/general.html :: headerfiles">
+            </th:block> /*/-->
+    <link rel="stylesheet" th:href="@{css/evidencePage.css}">
+</head>
+<body>
+<header th:insert="fragments/general.html :: header"></header>
+<section class="flexContainer">
+    <div class="skillSideBar">
+        <div class="categoryContainer">
+            <h3 class="categoriesHeader">Categories</h3>
+            <div id="categoryList" class="flexContainer flexWrap"></div>
+        </div>
+        <div class="skillContainer">
+            <h3 class="skillsHeader">Skills</h3>
+            <!-- The skill holding container, pieces are added through JS -->
+            <div id="skillList" class="flexContainer flexWrap"></div>
+        </div>
+    </div>
+    <div class="contentContainer">
+        <h2 class="evidenceTitle lightText">Evidence</h2>
+        <div class="evidenceContainerButtons">
+            <button id="showAllEvidence" class="btn btn-outline-primary">Show All Evidence</button>
+            <button class="btn btn-outline-primary" id="createEvidenceButton" type="button" style="display: none">Create Evidence</button>
+        </div>
+        <h5 id="nameHolder" class="lightText" style="display: none"></h5>
+        <div class="evidenceContainer">
+            <div class="col">
+                <!-- The evidence holding container, pieces are added through JS -->
+                <div id="evidenceList"></div>
+            </div>
+            <div class="col">
+                <div id="evidenceDetailsContainer" class="box">
+
+                    <div class="evidenceDetailsHeader">
+                        <p id="evidenceDetailsId" style="display: none"></p>
+                        <p id="evidenceDetailsDate" class="evidenceDetailsDate"></p>
+                        <div>
+                            <button id="editEvidenceButton" class="editIcon" type="button">
+                                <span th:insert="fragments/icons.html :: editIcon"></span>
+                            </button>
+                            <button id="deleteEvidenceButton" class="deleteIcon noStyleButton" type="button">
+                                <span th:insert="fragments/icons.html :: deleteIcon"></span>
+                            </button>
+                        </div>
+                    </div>
+                    <h2 id="evidenceDetailsTitle" class="evidenceDetailsTitle"></h2>
+                    <div id="evidenceDetailsCategories" class="evidencePreviewTags"></div>
+                    <hr style="margin-top: 1rem">
+                    <div id="evidenceWebLinks"></div>
+                    <hr id="evidenceWebLinksBreakLine">
+                    <div id="evidenceDetailsDescription" class="evidenceDetails"></div>
+                    <hr>
+                    <div id="evidenceDetailsLinkedUsersDiv">
+                        <div id="evidenceDetailsLinkedUsersTitle">Associated Users:</div>
+                        <div id="evidenceDetailsLinkedUsers"></div>
+                    </div>
+                    <div id="evidenceDetailsSkills" class="evidencePreviewTags"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="addOrEditEvidenceModal">
+        <div th:insert="fragments/general.html :: unicode"></div>
+        <div class="modalContent">
+            <div class="modalHeader">
+                <h5 class="modal-title" id="addOrEditEvidenceTitle">Add Evidence</h5>
+            </div>
+            <form id="evidenceCreationForm">
+                <div class="modalBody">
+                    <div class="form-group evidenceFormName">
+                        <label for="evidenceName" class="col-form-label required">Evidence Name: *</label>
+                        <span th:insert="fragments/icons.html :: infoTooltipIcon(title='Can include letters, numbers, and punctuation. Must be between 5 and 50 characters long.')"></span>
+                        <input class="form-control text-input" id="evidenceName"
+                               maxlength="50"
+                               minlength="5"
+                               placeholder="Name"
+                               required
+                               type="text">
+                        <div class="invalid-feedback" id="evidenceNameFeedback"></div>
+                        <small class="form-text form-text-counted text-muted countCharName">0 characters
+                            remaining</small>
+                    </div>
+                    <!--/*@thymesVar id="currentDate" type="java.time.LocalDate"*/-->
+                    <!--/*@thymesVar id="project" type="nz.ac.canterbury.seng302.portfolio.model.domain.projects.Project"*/-->
+                    <!--/*@thymesVar id="projectStartDate" type="java.lang.String"*/-->
+                    <!--/*@thymesVar id="evidenceMaxDate" type="java.time.LocalDate"*/-->
+                    <div class="form-group evidenceFormDate">
+                        <label class="form-label required" for="evidenceDate">Date: *</label>
+                        <span th:insert="fragments/icons.html :: infoTooltipIcon(title='This is the date the evidence occurred. It must fall within the project dates and not be in the future.')"></span>
+                        <input class="form-control form-control-sm milestoneInputEndDate"
+                               id="evidenceDate"
+                               name="evidenceDate"
+                               th:value="${currentDate}"
+                               th:min="${projectStartDate}"
+                               th:max="${evidenceMaxDate}"
+                               required
+                               type="date">
+                        <div class="invalid-feedback" id="evidenceDateFeedback"></div>
+                        <small class="form-text text-muted" id="projectDatesLabel" th:text="'Project dates: ' + ${project.getStartDateFormatted()} + ' - ' + ${project.getEndDateFormatted()}"></small>
+                    </div>
+                    <div class="form-group evidenceFormDescription">
+                        <label for="evidenceDescription" class="col-form-label required">Description: *</label>
+                        <span th:insert="fragments/icons.html :: infoTooltipIcon(title='Can include letters, numbers, and punctuation. Must be between 5 and 500 characters long.')"></span>
+                        <textarea class="form-control text-input"
+                                  id="evidenceDescription"
+                                  rows="4"
+                                  placeholder="Description"
+                                  maxlength="500"
+                                  minlength="5"
+                                  required></textarea>
+                        <div class="invalid-feedback" id="evidenceDescriptionFeedback"></div>
+                        <small class="form-text text-muted form-text-counted countCharDescription">0 characters remaining</small>
+                    </div>
+                    <div class="form-group evidenceFormSkills ui-widget">
+                        <label for="skillsInput" class="col-form-label">Skills:</label>
+                        <span th:insert="fragments/icons.html :: infoTooltipIcon(title='Can include letters, numbers, and hyphens, and be up to 30 characters long. Separate skills with spaces. Use underscores to create multi-word skills e.g: Manual_Testing')"></span>
+                        <div class="tagInputContainer">
+                            <div id="tagInputChips"></div>
+                            <!--/*@thymesVar id="skillRegex" type="nz.ac.canterbury.seng302.portfolio.service.RegexPattern"*/-->
+                            <input id="skillsInput" class="noDisplayInput" type="text"
+                                   th:pattern="${skillRegex.getPatternString()}"
+                                   th:title="${'Skills' + skillRegex.getRequirements()}"/>
+                        </div>
+                        <div class="invalid-feedback" id="evidenceSkillFeedback"></div>
+                    </div>
+                    <div id="evidenceFormCategories" class="form-group">
+                        <label class="col-form-label">Categories:</label>
+                        <div class="row">
+                            <div class="col center">
+                                <button id="buttonQualitative" type="button" class="btn btn-secondary inlineText evidenceFormCategoryButton"
+                                        value="QUALITATIVE">
+                                    Qualitative
+                                    <label class="evidenceCategoryTickIcon">&#10003;</label>
+                                </button>
+                            </div>
+                            <div class="col center">
+                                <button id="buttonQuantitative" type="button" class="btn btn-secondary inlineText evidenceFormCategoryButton"
+                                        value="QUANTITATIVE">
+                                    Quantitative
+                                    <label class="evidenceCategoryTickIcon">&#10003;</label>
+                                </button>
+                            </div>
+                            <div class="col center">
+                                <button id="buttonService" type="button" class="btn btn-secondary inlineText evidenceFormCategoryButton"
+                                        value="SERVICE">
+                                    Service
+                                    <label class="evidenceCategoryTickIcon">&#10003;</label>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div id="webLinks">
+                                <h6 id="webLinkTitle" style="display: none">Added Links:</h6>
+                                <div id="addedWebLinks"></div>
+                            </div>
+                            <div id="linkUsers">
+                                <h6 id="linkedUsersTitle" style="display: none">Linked Users:</h6>
+                                <div id="linkedUsers"></div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div>
+                                <div id="weblinkForm" style="display:none">
+                                    <div class="form-group ">
+                                        <label class="col-form-label" for="webLinkUrl">Link:</label>
+                                        <!--/*@thymesVar id="webLinkRegex" type="nz.ac.canterbury.seng302.portfolio.service.RegexPattern"*/-->
+                                        <!--/*@thymesVar id="webLinkMaxUrlLength" type="int"*/-->
+                                        <input class="form-control"
+                                               id="webLinkUrl"
+                                               placeholder="https://www.example.com"
+                                               type="text"
+                                               th:pattern="${webLinkRegex.getPatternString()}"
+                                               th:title="${'Weblinks' + webLinkRegex.getRequirements()}"
+                                               th:maxlength="${webLinkMaxUrlLength}" required>
+                                    </div>
+                                    <div class="invalid-feedback" id="evidenceWeblinkAddressFeedback"></div>
+                                    <div class="form-group ">
+                                        <input class="form-control"
+                                               id="webLinkName"
+                                               placeholder="Link Name"
+                                               type="text"
+                                               minlength="1" required>
+                                    </div>
+                                    <div class="invalid-feedback" id="evidenceWeblinkNameFeedback"></div>
+                                </div>
+                                <button class="btn btn-secondary evidenceFormButton"
+                                        id="addWeblinkButton"
+                                        type="button">
+                                    Add Web Link
+                                </button>
+                                <button class="btn btn-secondary evidenceFormButton"
+                                        id="cancelWeblinkButton"
+                                        style="display: none"
+                                        type="button">
+                                    Cancel
+                                </button>
+                                <span th:insert="fragments/icons.html :: infoTooltipIcon(title=${'Use web links to support your evidence. A maximum of ten web links can be added'})"></span>
+                                <h5 id="webLinkFull" style="display:none">10 web links have been added</h5>
+                            </div>
+                            <div>
+                                <div id="linkUsersForm" style="display:none">
+                                    <div class="form-group ">
+                                        <label class="col-form-label" for="linkUsersInput">Link Users:</label>
+                                        <input class="form-control"
+                                               id="linkUsersInput"
+                                               type="text">
+                                    </div>
+                                </div>
+                                <button class="btn btn-secondary evidenceFormButton"
+                                        id="linkUsersToEvidenceButton"
+                                        type="button">
+                                    Link Users
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modalFooter">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal" id="evidenceCancelButton" type="button">
+                        Cancel
+                    </button>
+                    <button class="btn btn-primary"
+                            disabled
+                            id="evidenceSaveButton" type="submit">
+                        Create
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+<svg class="waveBackground" viewBox="0 0 3840 2160" width="3840" height="2160" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="3840" height="2160" fill="#001220"></rect><path d="M0 1526L64 1527.2C128 1528.3 256 1530.7 384 1499.5C512 1468.3 640 1403.7 768 1402.2C896 1400.7 1024 1462.3 1152 1507.2C1280 1552 1408 1580 1536 1593.5C1664 1607 1792 1606 1920 1543.7C2048 1481.3 2176 1357.7 2304 1360.3C2432 1363 2560 1492 2688 1529.2C2816 1566.3 2944 1511.7 3072 1507.5C3200 1503.3 3328 1549.7 3456 1504.5C3584 1459.3 3712 1322.7 3776 1254.3L3840 1186L3840 2161L3776 2161C3712 2161 3584 2161 3456 2161C3328 2161 3200 2161 3072 2161C2944 2161 2816 2161 2688 2161C2560 2161 2432 2161 2304 2161C2176 2161 2048 2161 1920 2161C1792 2161 1664 2161 1536 2161C1408 2161 1280 2161 1152 2161C1024 2161 896 2161 768 2161C640 2161 512 2161 384 2161C256 2161 128 2161 64 2161L0 2161Z" fill="#264653"></path><path d="M0 1415L64 1449.7C128 1484.3 256 1553.7 384 1548.7C512 1543.7 640 1464.3 768 1428.8C896 1393.3 1024 1401.7 1152 1390C1280 1378.3 1408 1346.7 1536 1333.5C1664 1320.3 1792 1325.7 1920 1387C2048 1448.3 2176 1565.7 2304 1609.2C2432 1652.7 2560 1622.3 2688 1618.2C2816 1614 2944 1636 3072 1604.7C3200 1573.3 3328 1488.7 3456 1463.3C3584 1438 3712 1472 3776 1489L3840 1506L3840 2161L3776 2161C3712 2161 3584 2161 3456 2161C3328 2161 3200 2161 3072 2161C2944 2161 2816 2161 2688 2161C2560 2161 2432 2161 2304 2161C2176 2161 2048 2161 1920 2161C1792 2161 1664 2161 1536 2161C1408 2161 1280 2161 1152 2161C1024 2161 896 2161 768 2161C640 2161 512 2161 384 2161C256 2161 128 2161 64 2161L0 2161Z" fill="#215b64"></path><path d="M0 1662L64 1636.7C128 1611.3 256 1560.7 384 1530.2C512 1499.7 640 1489.3 768 1478.2C896 1467 1024 1455 1152 1453C1280 1451 1408 1459 1536 1503.5C1664 1548 1792 1629 1920 1621.5C2048 1614 2176 1518 2304 1516.3C2432 1514.7 2560 1607.3 2688 1652.5C2816 1697.7 2944 1695.3 3072 1649.7C3200 1604 3328 1515 3456 1492.7C3584 1470.3 3712 1514.7 3776 1536.8L3840 1559L3840 2161L3776 2161C3712 2161 3584 2161 3456 2161C3328 2161 3200 2161 3072 2161C2944 2161 2816 2161 2688 2161C2560 2161 2432 2161 2304 2161C2176 2161 2048 2161 1920 2161C1792 2161 1664 2161 1536 2161C1408 2161 1280 2161 1152 2161C1024 2161 896 2161 768 2161C640 2161 512 2161 384 2161C256 2161 128 2161 64 2161L0 2161Z" fill="#24706e"></path><path d="M0 1555L64 1560.8C128 1566.7 256 1578.3 384 1626C512 1673.7 640 1757.3 768 1774.2C896 1791 1024 1741 1152 1733C1280 1725 1408 1759 1536 1734.5C1664 1710 1792 1627 1920 1586.3C2048 1545.7 2176 1547.3 2304 1587.2C2432 1627 2560 1705 2688 1715.3C2816 1725.7 2944 1668.3 3072 1672.5C3200 1676.7 3328 1742.3 3456 1733.7C3584 1725 3712 1642 3776 1600.5L3840 1559L3840 2161L3776 2161C3712 2161 3584 2161 3456 2161C3328 2161 3200 2161 3072 2161C2944 2161 2816 2161 2688 2161C2560 2161 2432 2161 2304 2161C2176 2161 2048 2161 1920 2161C1792 2161 1664 2161 1536 2161C1408 2161 1280 2161 1152 2161C1024 2161 896 2161 768 2161C640 2161 512 2161 384 2161C256 2161 128 2161 64 2161L0 2161Z" fill="#388571"></path><path d="M0 1731L64 1734.2C128 1737.3 256 1743.7 384 1764C512 1784.3 640 1818.7 768 1833.8C896 1849 1024 1845 1152 1840C1280 1835 1408 1829 1536 1822.8C1664 1816.7 1792 1810.3 1920 1809.7C2048 1809 2176 1814 2304 1789C2432 1764 2560 1709 2688 1697.3C2816 1685.7 2944 1717.3 3072 1735.2C3200 1753 3328 1757 3456 1740.7C3584 1724.3 3712 1687.7 3776 1669.3L3840 1651L3840 2161L3776 2161C3712 2161 3584 2161 3456 2161C3328 2161 3200 2161 3072 2161C2944 2161 2816 2161 2688 2161C2560 2161 2432 2161 2304 2161C2176 2161 2048 2161 1920 2161C1792 2161 1664 2161 1536 2161C1408 2161 1280 2161 1152 2161C1024 2161 896 2161 768 2161C640 2161 512 2161 384 2161C256 2161 128 2161 64 2161L0 2161Z" fill="#5a996e"></path><path d="M0 1941L64 1927.5C128 1914 256 1887 384 1879.5C512 1872 640 1884 768 1885.7C896 1887.3 1024 1878.7 1152 1888C1280 1897.3 1408 1924.7 1536 1918.3C1664 1912 1792 1872 1920 1844.8C2048 1817.7 2176 1803.3 2304 1796.2C2432 1789 2560 1789 2688 1797.3C2816 1805.7 2944 1822.3 3072 1832C3200 1841.7 3328 1844.3 3456 1847.8C3584 1851.3 3712 1855.7 3776 1857.8L3840 1860L3840 2161L3776 2161C3712 2161 3584 2161 3456 2161C3328 2161 3200 2161 3072 2161C2944 2161 2816 2161 2688 2161C2560 2161 2432 2161 2304 2161C2176 2161 2048 2161 1920 2161C1792 2161 1664 2161 1536 2161C1408 2161 1280 2161 1152 2161C1024 2161 896 2161 768 2161C640 2161 512 2161 384 2161C256 2161 128 2161 64 2161L0 2161Z" fill="#84aa68"></path><path d="M0 1947L64 1955.5C128 1964 256 1981 384 1970C512 1959 640 1920 768 1909.8C896 1899.7 1024 1918.3 1152 1930C1280 1941.7 1408 1946.3 1536 1957C1664 1967.7 1792 1984.3 1920 1996.8C2048 2009.3 2176 2017.7 2304 2017.5C2432 2017.3 2560 2008.7 2688 1983.7C2816 1958.7 2944 1917.3 3072 1901.8C3200 1886.3 3328 1896.7 3456 1915.3C3584 1934 3712 1961 3776 1974.5L3840 1988L3840 2161L3776 2161C3712 2161 3584 2161 3456 2161C3328 2161 3200 2161 3072 2161C2944 2161 2816 2161 2688 2161C2560 2161 2432 2161 2304 2161C2176 2161 2048 2161 1920 2161C1792 2161 1664 2161 1536 2161C1408 2161 1280 2161 1152 2161C1024 2161 896 2161 768 2161C640 2161 512 2161 384 2161C256 2161 128 2161 64 2161L0 2161Z" fill="#b4b964"></path><path d="M0 1958L64 1972.3C128 1986.7 256 2015.3 384 2025.7C512 2036 640 2028 768 2040.7C896 2053.3 1024 2086.7 1152 2096C1280 2105.3 1408 2090.7 1536 2070C1664 2049.3 1792 2022.7 1920 2027.3C2048 2032 2176 2068 2304 2086.5C2432 2105 2560 2106 2688 2103.5C2816 2101 2944 2095 3072 2082C3200 2069 3328 2049 3456 2045.5C3584 2042 3712 2055 3776 2061.5L3840 2068L3840 2161L3776 2161C3712 2161 3584 2161 3456 2161C3328 2161 3200 2161 3072 2161C2944 2161 2816 2161 2688 2161C2560 2161 2432 2161 2304 2161C2176 2161 2048 2161 1920 2161C1792 2161 1664 2161 1536 2161C1408 2161 1280 2161 1152 2161C1024 2161 896 2161 768 2161C640 2161 512 2161 384 2161C256 2161 128 2161 64 2161L0 2161Z" fill="#e9c46a"></path></svg>
+</body>
+<script th:src="@{js/evidenceUtilities.js}" type="application/javascript"></script>
+<script th:src="@{js/skillChips.js}" type="application/javascript"></script>
+<script th:src="@{js/evidenceBySkills.js}" type="application/javascript"></script>
+<script th:src="@{js/addEditEvidence.js}" type="application/javascript"></script>
+<script th:src="@{js/notifications.js}" type="application/javascript"></script>
+<script th:inline="javascript">
+    const todaysDate = [[${currentDate}]]
+    const evidenceMaxDate = [[${evidenceMaxDate}]]
+    const projectStartDate = [[${projectStartDate}]]
+    const projectStartFormatted = [[${project.getStartDateFormatted()}]]
+    const projectEndFormatted = [[${project.getEndDateFormatted()}]]
+    const weblinkRegexPattern =[[${webLinkRegex.getPatternString()}]]
+    const weblinkRegexRequirements =[[${webLinkRegex.getRequirements()}]]
+</script>
+</html>

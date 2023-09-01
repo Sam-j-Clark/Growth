@@ -1,0 +1,143 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Project</title>
+    <!--/*/ <th:block th:include="fragments/general.html :: headerfiles">
+            </th:block> /*/-->
+    <link rel="stylesheet" th:href="@{css/sprintEditPage.css}">
+    <div th:insert="fragments/general.html :: unicode"></div>
+</head>
+<body>
+<!--The below section <header> pulls the fragment from fragments/general-->
+<header th:insert="fragments/general.html :: header"></header>
+<section class="editSprintContainer">
+    <form class="editForm was-validated" id="sprintEditForm" method="post" th:action="@{sprintSubmit}" novalidate>
+        <!--Below are the divs that handle error messages
+            If there is an attribute with either "errorMessage", "successMessage", or "infoMessage,
+            they will be displayed below-->
+        <h1>Edit Sprint</h1>
+        <div class="errorMessageParent alert alert-danger alert-dismissible fade show" role="alert"
+             style="display: none">
+            <p class="errorMessage"></p>
+        </div>
+        <input id="sprintId" name="sprintId" style="display: none" th:value="${sprint.getId()}"
+               type="text">
+        <div class="row">
+            <div class="col">
+                <div>
+                    <label class="form-label" for="sprintName">Name</label>
+                    <input class="form-control canDisable" id="sprintName" maxlength="50" name="sprintName" required
+                           th:pattern="${generalUnicodeRegex.getPatternString()}"
+                           th:title="${'Sprint name' + generalUnicodeRegex.getRequirements()}"
+                           th:value="${sprint.getName()}"
+                           type="text">
+                    <div class="invalid-feedback" id="nameError" th:text="${'Sprint name' + generalUnicodeRegex.getRequirements()}"></div>
+                </div>
+
+            </div>
+            <div class="col">
+                <label class="form-label" for="sprintColour">Colour picker</label>
+                <input class="form-control form-control-color" id="sprintColour" name="sprintColour" required
+                       th:value="${sprint.getColour()}" title="Choose your sprint colour" type="color">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <label class="form-label" for="sprintStartDate">Start Date</label>
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     width="16"
+                     height="16"
+                     fill="currentColor"
+                     class="bi bi-question-circle"
+                     viewBox="0 0 16 16"
+                     data-bs-toggle="tooltip" data-bs-placement="top"
+                     data-bs-custom-class="custom-tooltip"
+                     data-bs-title="Must be before end date, within project, and not overlap other sprints">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                    <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/>
+                </svg>
+                <div>
+                    <input class="form-control date" id="sprintStartDate" name="sprintStartDate" required
+                           th:max="${maxSprintStartDate}" th:min="${minSprintStartDate}"
+                           th:value="${sprint.getStartDate()}"
+                           type="date">
+                    <div class="invalid-feedback dateFeedback" id="sprintStartDateFeedback"></div>
+                </div>
+                <small class="form-text text-muted" th:text="${textForPrevSprint}"></small>
+            </div>
+            <div class="col">
+                <label class="form-label" for="sprintEndDate">End Date</label>
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     width="16"
+                     height="16"
+                     fill="currentColor"
+                     class="bi bi-question-circle"
+                     viewBox="0 0 16 16"
+                     data-bs-toggle="tooltip" data-bs-placement="top"
+                     data-bs-custom-class="custom-tooltip"
+                     data-bs-title="Must be after start date, within project, and not overlap other sprints">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                    <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/>
+                </svg>
+                <div>
+                    <input class="form-control date" id="sprintEndDate" name="sprintEndDate" required
+                           th:max="${maxSprintEndDate}" th:min="${minSprintEndDate}" th:value="${sprint.getEndDate()}"
+                           type="date">
+                    <div class="invalid-feedback dateFeedback" id="sprintEndDateFeedback"></div>
+                </div>
+
+                <small class="form-text text-muted" th:text="${textForNextSprint}"></small>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="dateAlert alert alert-danger alert-dismissible fade show" role="alert"
+                     style="display: none">
+                    <strong>Oh no!</strong> You should probably make the start date be before the end date
+                </div>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="sprintDescription">Description</label>
+            <textarea class="form-control canDisable" id="sprintDescription" maxlength="200" name="sprintDescription"
+                      th:text="${sprint.getDescription()}"
+                      th:title="${'Sprint description' + generalUnicodeRegex.getRequirements()}"></textarea>
+            <div class="invalid-feedback" id="descriptionError" th:text="${'Sprint description' + generalUnicodeRegex.getRequirements()}"></div>
+        </div>
+        <button class="btn btn-primary submitButton canDisable" id="editSprintSubmitButton" type="submit">Submit
+        </button>
+        <button class="btn btn-danger" onclick="history.back()" type="button">Cancel</button>
+
+    </form>
+</section>
+<svg class="waveBackground" height="2160" version="1.1" viewBox="0 0 3840 2160" width="3840"
+     xmlns="http://www.w3.org/2000/svg">
+    <rect fill="#001220" height="2160" width="3840" x="0" y="0"></rect>
+    <path d="M0 1451L64 1425.3C128 1399.7 256 1348.3 384 1313.3C512 1278.3 640 1259.7 768 1267C896 1274.3 1024 1307.7 1152 1345.8C1280 1384 1408 1427 1536 1441C1664 1455 1792 1440 1920 1441.5C2048 1443 2176 1461 2304 1490.2C2432 1519.3 2560 1559.7 2688 1524.2C2816 1488.7 2944 1377.3 3072 1334.3C3200 1291.3 3328 1316.7 3456 1322C3584 1327.3 3712 1312.7 3776 1305.3L3840 1298L3840 2161L3776 2161C3712 2161 3584 2161 3456 2161C3328 2161 3200 2161 3072 2161C2944 2161 2816 2161 2688 2161C2560 2161 2432 2161 2304 2161C2176 2161 2048 2161 1920 2161C1792 2161 1664 2161 1536 2161C1408 2161 1280 2161 1152 2161C1024 2161 896 2161 768 2161C640 2161 512 2161 384 2161C256 2161 128 2161 64 2161L0 2161Z"
+          fill="#264653"></path>
+    <path d="M0 1563L64 1554.5C128 1546 256 1529 384 1537.3C512 1545.7 640 1579.3 768 1562.8C896 1546.3 1024 1479.7 1152 1473C1280 1466.3 1408 1519.7 1536 1524.8C1664 1530 1792 1487 1920 1491.3C2048 1495.7 2176 1547.3 2304 1569.8C2432 1592.3 2560 1585.7 2688 1553.3C2816 1521 2944 1463 3072 1454C3200 1445 3328 1485 3456 1526.5C3584 1568 3712 1611 3776 1632.5L3840 1654L3840 2161L3776 2161C3712 2161 3584 2161 3456 2161C3328 2161 3200 2161 3072 2161C2944 2161 2816 2161 2688 2161C2560 2161 2432 2161 2304 2161C2176 2161 2048 2161 1920 2161C1792 2161 1664 2161 1536 2161C1408 2161 1280 2161 1152 2161C1024 2161 896 2161 768 2161C640 2161 512 2161 384 2161C256 2161 128 2161 64 2161L0 2161Z"
+          fill="#215e66"></path>
+    <path d="M0 1568L64 1571.3C128 1574.7 256 1581.3 384 1583.5C512 1585.7 640 1583.3 768 1602.8C896 1622.3 1024 1663.7 1152 1680.2C1280 1696.7 1408 1688.3 1536 1659.8C1664 1631.3 1792 1582.7 1920 1555.2C2048 1527.7 2176 1521.3 2304 1550.2C2432 1579 2560 1643 2688 1648.8C2816 1654.7 2944 1602.3 3072 1585.8C3200 1569.3 3328 1588.7 3456 1588.8C3584 1589 3712 1570 3776 1560.5L3840 1551L3840 2161L3776 2161C3712 2161 3584 2161 3456 2161C3328 2161 3200 2161 3072 2161C2944 2161 2816 2161 2688 2161C2560 2161 2432 2161 2304 2161C2176 2161 2048 2161 1920 2161C1792 2161 1664 2161 1536 2161C1408 2161 1280 2161 1152 2161C1024 2161 896 2161 768 2161C640 2161 512 2161 384 2161C256 2161 128 2161 64 2161L0 2161Z"
+          fill="#297770"></path>
+    <path d="M0 1582L64 1620.5C128 1659 256 1736 384 1755C512 1774 640 1735 768 1740.2C896 1745.3 1024 1794.7 1152 1776.3C1280 1758 1408 1672 1536 1669.3C1664 1666.7 1792 1747.3 1920 1781.8C2048 1816.3 2176 1804.7 2304 1798.7C2432 1792.7 2560 1792.3 2688 1766.5C2816 1740.7 2944 1689.3 3072 1686.5C3200 1683.7 3328 1729.3 3456 1760.3C3584 1791.3 3712 1807.7 3776 1815.8L3840 1824L3840 2161L3776 2161C3712 2161 3584 2161 3456 2161C3328 2161 3200 2161 3072 2161C2944 2161 2816 2161 2688 2161C2560 2161 2432 2161 2304 2161C2176 2161 2048 2161 1920 2161C1792 2161 1664 2161 1536 2161C1408 2161 1280 2161 1152 2161C1024 2161 896 2161 768 2161C640 2161 512 2161 384 2161C256 2161 128 2161 64 2161L0 2161Z"
+          fill="#488f70"></path>
+    <path d="M0 1787L64 1793.3C128 1799.7 256 1812.3 384 1837.7C512 1863 640 1901 768 1886.3C896 1871.7 1024 1804.3 1152 1802.7C1280 1801 1408 1865 1536 1896.8C1664 1928.7 1792 1928.3 1920 1923.3C2048 1918.3 2176 1908.7 2304 1873.3C2432 1838 2560 1777 2688 1768.5C2816 1760 2944 1804 3072 1834.7C3200 1865.3 3328 1882.7 3456 1860.5C3584 1838.3 3712 1776.7 3776 1745.8L3840 1715L3840 2161L3776 2161C3712 2161 3584 2161 3456 2161C3328 2161 3200 2161 3072 2161C2944 2161 2816 2161 2688 2161C2560 2161 2432 2161 2304 2161C2176 2161 2048 2161 1920 2161C1792 2161 1664 2161 1536 2161C1408 2161 1280 2161 1152 2161C1024 2161 896 2161 768 2161C640 2161 512 2161 384 2161C256 2161 128 2161 64 2161L0 2161Z"
+          fill="#75a56a"></path>
+    <path d="M0 1934L64 1924C128 1914 256 1894 384 1889.2C512 1884.3 640 1894.7 768 1908.3C896 1922 1024 1939 1152 1948.7C1280 1958.3 1408 1960.7 1536 1947.2C1664 1933.7 1792 1904.3 1920 1889.3C2048 1874.3 2176 1873.7 2304 1895.7C2432 1917.7 2560 1962.3 2688 1977.7C2816 1993 2944 1979 3072 1975.7C3200 1972.3 3328 1979.7 3456 1973C3584 1966.3 3712 1945.7 3776 1935.3L3840 1925L3840 2161L3776 2161C3712 2161 3584 2161 3456 2161C3328 2161 3200 2161 3072 2161C2944 2161 2816 2161 2688 2161C2560 2161 2432 2161 2304 2161C2176 2161 2048 2161 1920 2161C1792 2161 1664 2161 1536 2161C1408 2161 1280 2161 1152 2161C1024 2161 896 2161 768 2161C640 2161 512 2161 384 2161C256 2161 128 2161 64 2161L0 2161Z"
+          fill="#acb764"></path>
+    <path d="M0 2011L64 2002.7C128 1994.3 256 1977.7 384 1970.7C512 1963.7 640 1966.3 768 1975.8C896 1985.3 1024 2001.7 1152 2009C1280 2016.3 1408 2014.7 1536 2019.7C1664 2024.7 1792 2036.3 1920 2042.5C2048 2048.7 2176 2049.3 2304 2054.3C2432 2059.3 2560 2068.7 2688 2075C2816 2081.3 2944 2084.7 3072 2084.2C3200 2083.7 3328 2079.3 3456 2060.2C3584 2041 3712 2007 3776 1990L3840 1973L3840 2161L3776 2161C3712 2161 3584 2161 3456 2161C3328 2161 3200 2161 3072 2161C2944 2161 2816 2161 2688 2161C2560 2161 2432 2161 2304 2161C2176 2161 2048 2161 1920 2161C1792 2161 1664 2161 1536 2161C1408 2161 1280 2161 1152 2161C1024 2161 896 2161 768 2161C640 2161 512 2161 384 2161C256 2161 128 2161 64 2161L0 2161Z"
+          fill="#e9c46a"></path>
+</svg>
+</body>
+<script>
+    //We're passing these constants to the rest of our scripts
+    const minSprintStartDate = "[[${minSprintStartDate}]]";
+    const maxSprintStartDate = "[[${maxSprintStartDate}]]";
+    const minSprintEndDate = "[[${minSprintEndDate}]]";
+    const maxSprintEndDate = "[[${maxSprintEndDate}]]";
+</script>
+<script th:src="@{js/dateValidator.js}" type="application/javascript"></script>
+<script th:src="@{js/notifications.js}" type="application/javascript"></script>
+<script th:src="@{js/sprintEdit.js}" type="application/javascript"></script>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Register</title>
+    <!-- jQuery -->
+    <script crossorigin="anonymous"
+            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+            src="https://code.jquery.com/jquery-3.6.0.min.js">
+    </script>
+    <!-- jQuery UI -->
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.13.2/themes/smoothness/jquery-ui.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
+
+    <!-- Bootstrap -->
+    <script crossorigin="anonymous"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js">
+    </script>
+    <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css' rel='stylesheet'>
+
+    <!--Roboto Font-->
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+          rel="stylesheet">
+
+    <!--Lobster Font-->
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css2?family=Lobster+Two:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+          rel="stylesheet">
+
+    <!--Style Sheet-->
+    <link rel="stylesheet" th:href="@{css/styles.css}">
+    <link rel="stylesheet" th:href="@{css/registerPage.css}">
+    <script th:src="@{js/general.js}" type="application/javascript"></script>
+
+</head>
+<body>
+<div class="registerDiv">
+    <h1>Register account</h1>
+    <p class="required">Mandatory fields are marked with </p>
+    <div class="errorMessageParent alert alert-danger alert-dismissible fade show" role="alert" style="display: none">
+        <p class="errorMessage"></p>
+    </div>
+    <!--/*@thymesVar id="registerForm" type="UserRequest"*/-->
+    <form id="registerForm" method="post" th:action="@{register}" th:object="${registerForm}">
+
+        <div class="row mb-3">
+            <div class="col">
+                <label class="required form-label" for="firstname">First name(s)</label>
+                <!--/*@thymesVar id="firstLastNameRegex" type="nz.ac.canterbury.seng302.portfolio.service.RegexPattern"*/-->
+                <input class="form-control canDisable" id="firstname" maxlength="100" name="firstname"
+                       required
+                       th:pattern="${firstLastNameRegex.getPatternString()}"
+                       th:title="${'First name' + firstLastNameRegex.getRequirements()}"
+                       type="text">
+            </div>
+            <div class="col">
+                <label class="form-label" for="middlename">Middle name(s)</label>
+                <!--/*@thymesVar id="middleNameRegex" type="nz.ac.canterbury.seng302.portfolio.service.RegexPattern"*/-->
+                <input class="form-control canDisable" id="middlename" maxlength="100" name="middlename"
+                       th:pattern="${middleNameRegex.getPatternString()}"
+                       th:title="${'Middle name' + middleNameRegex.getRequirements()}"
+                       type="text">
+            </div>
+            <div class="col">
+                <label class="required form-label" for="lastname">Last name(s)</label>
+                <!--/*@thymesVar id="firstLastNameRegex" type="nz.ac.canterbury.seng302.portfolio.service.RegexPattern"*/-->
+                <input class="form-control canDisable" id="lastname" maxlength="100" name="lastname"
+                       required
+                       th:pattern="${firstLastNameRegex.getPatternString()}"
+                       th:title="${'Last name' + firstLastNameRegex.getRequirements()}"
+                       type="text">
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col">
+                <label class="required form-label" for="username">Username</label>
+                <!--/*@thymesVar id="generalUnicodeNoSpacesRegex" type="nz.ac.canterbury.seng302.portfolio.service.RegexPattern"*/-->
+                <input class="form-control" id="username" maxlength="50" name="username" required
+                       th:pattern="${generalUnicodeNoSpacesRegex.getPatternString()}"
+                       th:title="${'Username' + generalUnicodeNoSpacesRegex.getRequirements()}"
+                       type="text">
+            </div>
+            <div class="col">
+                <label class="required form-label" for="password">Password</label>
+                <!--/*@thymesVar id="generalUnicodeNoSpacesRegex" type="nz.ac.canterbury.seng302.portfolio.service.RegexPattern"*/-->
+                <input class="form-control canDisable" id="password" maxlength="50" minlength="5" name="password"
+                       required
+                       th:pattern="${generalUnicodeNoSpacesRegex.getPatternString()}"
+                       th:title="${'Password' + generalUnicodeNoSpacesRegex.getRequirements()}"
+                       type="password">
+            </div>
+
+        </div>
+        <div class="mb-3">
+            <label class="required form-label" for="email">Email address</label>
+            <!--/*@thymesVar id="emailRegex" type="nz.ac.canterbury.seng302.portfolio.service.RegexPattern"*/-->
+            <input class="form-control canDisable" id="email" maxlength="100" name="email" required
+                   th:pattern="${emailRegex.getPatternString()}"
+                   th:title="${'Your email' + emailRegex.getRequirements()}"
+                   type="email">
+        </div>
+
+        <div class="row mb-3">
+            <div class="col">
+                <label class="form-label" for="nickname">Nickname</label>
+                <!--/*@thymesVar id="generalUnicodeRegex" type="nz.ac.canterbury.seng302.portfolio.service.RegexPattern"*/-->
+                <input class="form-control canDisable" id="nickname" maxlength="50" name="nickname"
+                       th:pattern="${generalUnicodeRegex.getPatternString()}"
+                       th:title="${'Nickname' + generalUnicodeRegex.getRequirements()}"
+                       type="text">
+            </div>
+            <div class="col">
+                <label class="form-label" for="personalPronouns">Pronouns</label>
+                <!--/*@thymesVar id="generalUnicodeRegex" type="nz.ac.canterbury.seng302.portfolio.service.RegexPattern"*/-->
+                <input class="form-control canDisable" id="personalPronouns" maxlength="50" name="personalPronouns"
+                       th:pattern="${generalUnicodeRegex.getPatternString()}"
+                       th:title="${'Pronouns' + generalUnicodeRegex.getRequirements()}"
+                       type="text">
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="bio">Bio</label>
+
+            <!-- The max length for fields in our database is, by default, somewhere around 250
+            So going beyond 250 characters, even for a bio, runs the risk of errors -->
+            <!--/*@thymesVar id="generalUnicodeRegex" type="nz.ac.canterbury.seng302.portfolio.service.RegexPattern"*/-->
+            <textarea class="form-control canDisable" contenteditable id="bio" maxlength="250" name="bio"
+                      th:pattern="${generalUnicodeRegex.getPatternString()}"
+                      th:title="${'Your bio' + generalUnicodeRegex.getRequirements()}"></textarea>
+        </div>
+        <button class="btn btn-primary " id="registerSubmitButton" type="submit">Submit</button>
+        <button class="btn btn-secondary" onclick="history.back()" type="button">Back</button>
+
+    </form>
+</div>
+
+<svg class="waveBackground" viewBox="0 0 3840 2160" width="3840" height="2160" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"><rect x="0" y="0" width="3840" height="2160" fill="#001220"></rect><path d="M0 1575L64 1596.7C128 1618.3 256 1661.7 384 1671.5C512 1681.3 640 1657.7 768 1621.8C896 1586 1024 1538 1152 1538C1280 1538 1408 1586 1536 1620.7C1664 1655.3 1792 1676.7 1920 1659.2C2048 1641.7 2176 1585.3 2304 1581.8C2432 1578.3 2560 1627.7 2688 1624.3C2816 1621 2944 1565 3072 1534C3200 1503 3328 1497 3456 1508.7C3584 1520.3 3712 1549.7 3776 1564.3L3840 1579L3840 2161L3776 2161C3712 2161 3584 2161 3456 2161C3328 2161 3200 2161 3072 2161C2944 2161 2816 2161 2688 2161C2560 2161 2432 2161 2304 2161C2176 2161 2048 2161 1920 2161C1792 2161 1664 2161 1536 2161C1408 2161 1280 2161 1152 2161C1024 2161 896 2161 768 2161C640 2161 512 2161 384 2161C256 2161 128 2161 64 2161L0 2161Z" fill="#264653"></path><path d="M0 1678L64 1690C128 1702 256 1726 384 1709.5C512 1693 640 1636 768 1646.8C896 1657.7 1024 1736.3 1152 1761C1280 1785.7 1408 1756.3 1536 1748.7C1664 1741 1792 1755 1920 1749.3C2048 1743.7 2176 1718.3 2304 1708.8C2432 1699.3 2560 1705.7 2688 1689C2816 1672.3 2944 1632.7 3072 1636.8C3200 1641 3328 1689 3456 1704C3584 1719 3712 1701 3776 1692L3840 1683L3840 2161L3776 2161C3712 2161 3584 2161 3456 2161C3328 2161 3200 2161 3072 2161C2944 2161 2816 2161 2688 2161C2560 2161 2432 2161 2304 2161C2176 2161 2048 2161 1920 2161C1792 2161 1664 2161 1536 2161C1408 2161 1280 2161 1152 2161C1024 2161 896 2161 768 2161C640 2161 512 2161 384 2161C256 2161 128 2161 64 2161L0 2161Z" fill="#226b6c"></path><path d="M0 1782L64 1795.5C128 1809 256 1836 384 1835.5C512 1835 640 1807 768 1799.2C896 1791.3 1024 1803.7 1152 1810.3C1280 1817 1408 1818 1536 1818.5C1664 1819 1792 1819 1920 1807.2C2048 1795.3 2176 1771.7 2304 1755C2432 1738.3 2560 1728.7 2688 1732.8C2816 1737 2944 1755 3072 1775.2C3200 1795.3 3328 1817.7 3456 1834C3584 1850.3 3712 1860.7 3776 1865.8L3840 1871L3840 2161L3776 2161C3712 2161 3584 2161 3456 2161C3328 2161 3200 2161 3072 2161C2944 2161 2816 2161 2688 2161C2560 2161 2432 2161 2304 2161C2176 2161 2048 2161 1920 2161C1792 2161 1664 2161 1536 2161C1408 2161 1280 2161 1152 2161C1024 2161 896 2161 768 2161C640 2161 512 2161 384 2161C256 2161 128 2161 64 2161L0 2161Z" fill="#488f70"></path><path d="M0 1907L64 1905.8C128 1904.7 256 1902.3 384 1905.2C512 1908 640 1916 768 1927.2C896 1938.3 1024 1952.7 1152 1957.3C1280 1962 1408 1957 1536 1935.3C1664 1913.7 1792 1875.3 1920 1867.3C2048 1859.3 2176 1881.7 2304 1891.5C2432 1901.3 2560 1898.7 2688 1889.8C2816 1881 2944 1866 3072 1855.7C3200 1845.3 3328 1839.7 3456 1855C3584 1870.3 3712 1906.7 3776 1924.8L3840 1943L3840 2161L3776 2161C3712 2161 3584 2161 3456 2161C3328 2161 3200 2161 3072 2161C2944 2161 2816 2161 2688 2161C2560 2161 2432 2161 2304 2161C2176 2161 2048 2161 1920 2161C1792 2161 1664 2161 1536 2161C1408 2161 1280 2161 1152 2161C1024 2161 896 2161 768 2161C640 2161 512 2161 384 2161C256 2161 128 2161 64 2161L0 2161Z" fill="#8fae66"></path><path d="M0 1971L64 1984C128 1997 256 2023 384 2035.2C512 2047.3 640 2045.7 768 2031.3C896 2017 1024 1990 1152 1984.7C1280 1979.3 1408 1995.7 1536 2016.3C1664 2037 1792 2062 1920 2070.3C2048 2078.7 2176 2070.3 2304 2054.7C2432 2039 2560 2016 2688 2017.2C2816 2018.3 2944 2043.7 3072 2039.7C3200 2035.7 3328 2002.3 3456 1995.7C3584 1989 3712 2009 3776 2019L3840 2029L3840 2161L3776 2161C3712 2161 3584 2161 3456 2161C3328 2161 3200 2161 3072 2161C2944 2161 2816 2161 2688 2161C2560 2161 2432 2161 2304 2161C2176 2161 2048 2161 1920 2161C1792 2161 1664 2161 1536 2161C1408 2161 1280 2161 1152 2161C1024 2161 896 2161 768 2161C640 2161 512 2161 384 2161C256 2161 128 2161 64 2161L0 2161Z" fill="#e9c46a"></path></svg>
+<script th:src="@{js/register.js}" type="application/javascript"></script>
+</body>
+</html>

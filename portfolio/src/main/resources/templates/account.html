@@ -1,0 +1,211 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Account</title>
+    <!--/*/ <th:block th:include="fragments/general.html :: headerfiles">
+            </th:block> /*/-->
+    <div th:insert="fragments/general.html :: unicode"></div>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{css/accountPage.css}">
+</head>
+<body>
+<header th:insert="fragments/general.html :: header"></header>
+<section class="accountBody">
+    <div class="accountInfo">
+        <form id="accountForm" class="was-validated" novalidate method="post" th:action="@{edit/details}">
+
+            <!--Below are the divs that handle error messages
+            If there is an attribute with either "errorMessage", "successMessage", or "infoMessage,
+            they will be displayed below-->
+            <div th:insert="fragments/general.html :: errorBox"></div>
+            <div th:insert="fragments/general.html :: successBox"></div>
+            <div th:insert="fragments/general.html :: infoBox"></div>
+
+
+            <h1>Personal Information</h1>
+            <p class="required mandatoryMessage">Mandatory fields are marked with </p>
+            <div class="row">
+                <div class="col-sm order-sm-last center">
+                    <div id="photoContainer">
+                        <!--/*@thymesVar id="user" type="nz.ac.canterbury.seng302.shared.identityprovider.UserResponse"*/-->
+                        <img alt="Your profile photo!" class="profilePic" id="accountPageImage"
+                             th:src="${user.profileImagePath}">
+                        <button type="button" id="uploadPhotoButton" class="btn btn-primary">Edit Profile Photo</button>
+                    </div>
+                </div>
+
+                <div class="col-sm order-sm-first">
+                    <div class="mb-3">
+                        <label class="required form-label" for="firstname">First name</label>
+                        <!--/*@thymesVar id="user" type="nz.ac.canterbury.seng302.shared.identityprovider.UserResponse"*/-->
+                        <!--/*@thymesVar id="firstLastNameRegex" type="nz.ac.canterbury.seng302.portfolio.service.RegexPattern"*/-->
+                        <input class="form-control canDisable" disabled id="firstname" minlength="2" maxlength="100"
+                               name="firstname" required
+                               th:pattern="${firstLastNameRegex.getPatternString()}"
+                               th:title="${'First name' + firstLastNameRegex.getRequirements()}"
+                               th:value="${user.getFirstName()}"
+                               type="text">
+                        <div id="firstNameError" class="invalid-feedback" th:text="${'First name must be 2-100 characters and ' + firstLastNameRegex.getRequirements()}"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="middlename">Middle name</label>
+                        <!--/*@thymesVar id="user" type="nz.ac.canterbury.seng302.shared.identityprovider.UserResponse"*/-->
+                        <!--/*@thymesVar id="middleNameRegex" type="nz.ac.canterbury.seng302.portfolio.service.RegexPattern"*/-->
+                        <input class="form-control canDisable" disabled id="middlename" maxlength="100"
+                               name="middlename"
+                               th:pattern="${middleNameRegex.getPatternString()}"
+                               th:title="${'Middle name' + middleNameRegex.getRequirements()}"
+                               th:value="${user.getMiddleName()}"
+                               type="text">
+                        <div id="middleNameError" class="invalid-feedback" th:text="${'Middle name' + middleNameRegex.getRequirements()}"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="required form-label" for="lastname">Last name</label>
+                        <!--/*@thymesVar id="user" type="nz.ac.canterbury.seng302.shared.identityprovider.UserResponse"*/-->
+                        <!--/*@thymesVar id="firstLastNameRegex" type="nz.ac.canterbury.seng302.portfolio.service.RegexPattern"*/-->
+                        <input class="form-control canDisable" disabled id="lastname" minlength="2" maxlength="100"
+                               name="lastname" required
+                               th:pattern="${firstLastNameRegex.getPatternString()}"
+                               th:title="${'Last name' + firstLastNameRegex.getRequirements()}"
+                               th:value="${user.getLastName()}"
+                               type="text">
+                        <div id="lastNameError" class="invalid-feedback" th:text="${'Last name must be 2-100 characters and ' + firstLastNameRegex.getRequirements()}"></div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="nickname">Nickname</label>
+                <!--/*@thymesVar id="user" type="nz.ac.canterbury.seng302.shared.identityprovider.UserResponse"*/-->
+                <!--/*@thymesVar id="generalUnicodeRegex" type="nz.ac.canterbury.seng302.portfolio.service.RegexPattern"*/-->
+                <input class="form-control canDisable" disabled id="nickname" maxlength="50"
+                       name="nickname"
+                       th:pattern="${generalUnicodeRegex.getPatternString()}"
+                       th:title="${'Nickname' + generalUnicodeRegex.getRequirements()}"
+                       th:value="${user.getNickname()}"
+                       type="text">
+                <div id="nickNameError" class="invalid-feedback" th:text="${'Nickname' + generalUnicodeRegex.getRequirements()}"></div>
+            </div>
+            <div class="mb-3">
+                <label class="required form-label" for="username">Username</label>
+                <!--/*@thymesVar id="user" type="nz.ac.canterbury.seng302.shared.identityprovider.UserResponse"*/-->
+                <!--/*@thymesVar id="generalUnicodeNoSpacesRegex" type="nz.ac.canterbury.seng302.portfolio.service.RegexPattern"*/-->
+                <input class="form-control" disabled id="username" maxlength="50" name="username"
+                       required
+                       th:pattern="${generalUnicodeNoSpacesRegex.getPatternString()}"
+                       th:title="${'Username' + generalUnicodeNoSpacesRegex.getRequirements()}"
+                       th:value="${user.getUsername()}"
+                       type="text">
+                <div id="userNameError" class="invalid-feedback" th:text="${'Username' + generalUnicodeNoSpacesRegex.getRequirements()}"></div>
+            </div>
+            <div class="mb-3">
+                <label class="required form-label" for="email">Email address</label>
+                <!--/*@thymesVar id="user" type="nz.ac.canterbury.seng302.shared.identityprovider.UserResponse"*/-->
+                <!--/*@thymesVar id="emailRegex" type="nz.ac.canterbury.seng302.portfolio.service.RegexPattern"*/-->
+                <input class="form-control canDisable" disabled id="email" maxlength="100"
+                       name="email" required
+                       th:pattern="${emailRegex.getPatternString()}"
+                       th:title="${'Your email' + emailRegex.getRequirements()}"
+                       th:value="${user.getEmail()}"
+                       type="email">
+                <div id="emailError" class="invalid-feedback" th:text="${'Your email' + emailRegex.getRequirements()}"></div>
+            </div>
+            <div class="mb-3">
+                <div class="mb-3">
+                    <label class="form-label" for="bio">User Bio</label>
+                    <!-- The max length for fields in our database is, by default, somewhere just past 250
+                    So going beyond 250 characters, even for a bio, runs the risk of errors -->
+                    <!--/*@thymesVar id="user" type="nz.ac.canterbury.seng302.shared.identityprovider.UserResponse"*/-->
+                    <!--/*@thymesVar id="generalUnicodeRegex" type="nz.ac.canterbury.seng302.portfolio.service.RegexPattern"*/-->
+                    <textarea class="form-control canDisable" disabled id="bio" maxlength="250"
+                              name="bio" th:text="${user.getBio()}"
+                              th:pattern="${generalUnicodeRegex.getPatternString()}"
+                              th:title="${'Your bio' + generalUnicodeRegex.getRequirements()}"></textarea>
+                    <div id="bioError" class="invalid-feedback" th:text="${'Bio' + generalUnicodeRegex.getRequirements()}"></div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label class="form-label" for="roles">Roles</label>
+                    <!--/*@thymesVar id="user" type="nz.ac.canterbury.seng302.shared.identityprovider.UserResponse"*/-->
+                    <input class="form-control" disabled id="roles" name="roles"
+                           th:value="${#strings.listJoin(user.getRolesList(), ', ')}"
+                           type="text">
+                </div>
+                <div class="col">
+                    <label class="form-label" for="personalPronouns">Pronouns</label>
+                    <!--/*@thymesVar id="user" type="nz.ac.canterbury.seng302.shared.identityprovider.UserResponse"*/-->
+                    <!--/*@thymesVar id="generalUnicodeRegex" type="nz.ac.canterbury.seng302.portfolio.service.RegexPattern"*/-->
+                    <input class="form-control canDisable" disabled id="personalPronouns" maxlength="50"
+                           name="personalPronouns"
+                           th:pattern="${generalUnicodeRegex.getPatternString()}"
+                           th:title="${'Pronouns' + generalUnicodeRegex.getRequirements()}"
+                           th:value="${user.getPersonalPronouns()}"
+                           type="text">
+                    <div id="pronounsError" class="invalid-feedback" th:text="${'Pronouns' + generalUnicodeRegex.getRequirements()}"></div>
+                </div>
+            </div>
+            <div class="mb-3">
+                <!--/*@thymesVar id="membersince" type="String"*/-->
+                <p class="memberSince" th:text="'Member since: ' + ${membersince}"></p>
+            </div>
+            <button class="btn btn-primary canDisable editUserSubmit" disabled style="display: none" type="submit">
+                Submit
+            </button>
+            <button class="btn btn-secondary editUserButton" type="button">Edit Account</button>
+
+        </form>
+        <div class="passwordChangeDiv" style="display: none">
+            <hr class="mt-3 mb-3">
+
+            <form id="passwordChangeForm" novalidate class="was-validated" oninput='ConfirmPassword.setCustomValidity(ConfirmPassword.value !== NewPassword.value ? true : "")' method="post">
+                <h1>Change Password</h1>
+
+                <div class="errorMessageParentPassword alert alert-danger alert-dismissible fade show" role="alert"
+                     style="display: none">
+                    <p class="errorMessagePassword"></p>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="OldPassword">Old password</label>
+                    <input class="form-control" id="OldPassword" maxlength="100" name="old password"
+                           required type="password">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="NewPassword">New password</label>
+                    <!--/*@thymesVar id="generalUnicodeNoSpacesRegex" type="nz.ac.canterbury.seng302.portfolio.service.RegexPattern"*/-->
+
+                    <input class="form-control " id="NewPassword" maxlength="100" minlength="5"
+                           name="new password"
+                           required
+                           th:pattern="${generalUnicodeNoSpacesRegex.getPatternString()}"
+                           th:title="${'Password' + generalUnicodeNoSpacesRegex.getRequirements()}"
+                           type="password">
+                    <div class="invalid-feedback" th:text="${'Password' + generalUnicodeNoSpacesRegex.getRequirements()}"></div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="ConfirmPassword">Confirm password</label>
+                    <input class="form-control" id="ConfirmPassword" maxlength="100" minlength="5"
+                           name="new password" required type="password">
+                    <div class="invalid-feedback">
+                        Passwords do not match.
+                    </div>
+                </div>
+                <button class="btn btn-primary canDisablePassword editPasswordSubmit" type="submit">Submit</button>
+            </form>
+            <hr class="mt-3 mb-3">
+        </div>
+
+
+    </div>
+</section>
+<div>
+    <svg class="waveBackground" viewBox="0 0 3840 2160" width="3840" height="2160" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"><rect x="0" y="0" width="3840" height="2160" fill="#001220"></rect><path d="M0 1483L91.5 1459.7C183 1436.3 366 1389.7 548.8 1390.7C731.7 1391.7 914.3 1440.3 1097.2 1438.5C1280 1436.7 1463 1384.3 1645.8 1390.7C1828.7 1397 2011.3 1462 2194.2 1497C2377 1532 2560 1537 2742.8 1513.3C2925.7 1489.7 3108.3 1437.3 3291.2 1442C3474 1446.7 3657 1508.3 3748.5 1539.2L3840 1570L3840 2161L3748.5 2161C3657 2161 3474 2161 3291.2 2161C3108.3 2161 2925.7 2161 2742.8 2161C2560 2161 2377 2161 2194.2 2161C2011.3 2161 1828.7 2161 1645.8 2161C1463 2161 1280 2161 1097.2 2161C914.3 2161 731.7 2161 548.8 2161C366 2161 183 2161 91.5 2161L0 2161Z" fill="#e9c46a"></path><path d="M0 1683L91.5 1689C183 1695 366 1707 548.8 1706.8C731.7 1706.7 914.3 1694.3 1097.2 1689.7C1280 1685 1463 1688 1645.8 1684.2C1828.7 1680.3 2011.3 1669.7 2194.2 1642.3C2377 1615 2560 1571 2742.8 1578.7C2925.7 1586.3 3108.3 1645.7 3291.2 1642.2C3474 1638.7 3657 1572.3 3748.5 1539.2L3840 1506L3840 2161L3748.5 2161C3657 2161 3474 2161 3291.2 2161C3108.3 2161 2925.7 2161 2742.8 2161C2560 2161 2377 2161 2194.2 2161C2011.3 2161 1828.7 2161 1645.8 2161C1463 2161 1280 2161 1097.2 2161C914.3 2161 731.7 2161 548.8 2161C366 2161 183 2161 91.5 2161L0 2161Z" fill="#8fae66"></path><path d="M0 1624L91.5 1616.8C183 1609.7 366 1595.3 548.8 1630.5C731.7 1665.7 914.3 1750.3 1097.2 1758.3C1280 1766.3 1463 1697.7 1645.8 1687.7C1828.7 1677.7 2011.3 1726.3 2194.2 1759.3C2377 1792.3 2560 1809.7 2742.8 1788.8C2925.7 1768 3108.3 1709 3291.2 1691.7C3474 1674.3 3657 1698.7 3748.5 1710.8L3840 1723L3840 2161L3748.5 2161C3657 2161 3474 2161 3291.2 2161C3108.3 2161 2925.7 2161 2742.8 2161C2560 2161 2377 2161 2194.2 2161C2011.3 2161 1828.7 2161 1645.8 2161C1463 2161 1280 2161 1097.2 2161C914.3 2161 731.7 2161 548.8 2161C366 2161 183 2161 91.5 2161L0 2161Z" fill="#488f70"></path><path d="M0 1827L91.5 1829C183 1831 366 1835 548.8 1832C731.7 1829 914.3 1819 1097.2 1806.8C1280 1794.7 1463 1780.3 1645.8 1776.8C1828.7 1773.3 2011.3 1780.7 2194.2 1805C2377 1829.3 2560 1870.7 2742.8 1872.7C2925.7 1874.7 3108.3 1837.3 3291.2 1831.7C3474 1826 3657 1852 3748.5 1865L3840 1878L3840 2161L3748.5 2161C3657 2161 3474 2161 3291.2 2161C3108.3 2161 2925.7 2161 2742.8 2161C2560 2161 2377 2161 2194.2 2161C2011.3 2161 1828.7 2161 1645.8 2161C1463 2161 1280 2161 1097.2 2161C914.3 2161 731.7 2161 548.8 2161C366 2161 183 2161 91.5 2161L0 2161Z" fill="#226b6c"></path><path d="M0 1896L91.5 1914.5C183 1933 366 1970 548.8 1981C731.7 1992 914.3 1977 1097.2 1957.8C1280 1938.7 1463 1915.3 1645.8 1930.3C1828.7 1945.3 2011.3 1998.7 2194.2 2004.8C2377 2011 2560 1970 2742.8 1960.3C2925.7 1950.7 3108.3 1972.3 3291.2 1966.2C3474 1960 3657 1926 3748.5 1909L3840 1892L3840 2161L3748.5 2161C3657 2161 3474 2161 3291.2 2161C3108.3 2161 2925.7 2161 2742.8 2161C2560 2161 2377 2161 2194.2 2161C2011.3 2161 1828.7 2161 1645.8 2161C1463 2161 1280 2161 1097.2 2161C914.3 2161 731.7 2161 548.8 2161C366 2161 183 2161 91.5 2161L0 2161Z" fill="#264653"></path></svg>
+</div>
+<script th:src="@{js/account.js}" type="application/javascript"></script>
+<script th:src="@{js/notifications.js}" type="application/javascript"></script>
+</body>
+</html>

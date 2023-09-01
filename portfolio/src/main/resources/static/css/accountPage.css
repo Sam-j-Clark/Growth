@@ -1,0 +1,62 @@
+/*Account*/
+
+.form-control:disabled{
+    border: 0;
+    box-shadow: none;
+    background-color: var(--background-colour-offblue);
+}
+
+.accountBody {
+    width: 100%;
+    height: 90vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.accountInfo {
+    margin-top: 4rem;
+    padding: 5rem;
+    width: 100%;
+    max-width: 50rem;
+    background-color: var(--background-colour-offblue);
+    border-radius: var(--border-radius);
+}
+
+.accountInfoHeader {
+    display: flex;
+    flex-direction: row;
+    padding-top: 100px;
+
+}
+
+
+
+#accountPageImage {
+    height: 15rem;
+}
+
+#photoContainer:hover #accountPageImage {
+    filter: contrast(50%);
+}
+
+#photoContainer:hover #uploadPhotoButton {
+    display: block;
+}
+
+#photoContainer {
+    position: relative;
+}
+
+#uploadPhotoButton {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+}
+
+.required:after {
+    content: "*";
+    color: red;
+}

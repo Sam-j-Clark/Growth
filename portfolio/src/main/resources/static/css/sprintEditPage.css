@@ -1,0 +1,9 @@
+/*Edit Sprints - editProject*/
+
+.editForm {
+    margin-top: 5rem;
+    width: 50rem;
+    background-color: var(--background-colour-offblue);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+}

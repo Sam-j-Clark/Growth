@@ -1,0 +1,10 @@
+.idea/
+.vscode/
+*/.gradle/
+*/build/
+*/.idea/
+*/src/generated/
+*/bin/
+*/logs/
+*/shared/out/*
+node_modules/

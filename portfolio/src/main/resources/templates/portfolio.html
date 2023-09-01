@@ -1,0 +1,291 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Project</title>
+    <!--/*/ <th:block th:include="fragments/general.html :: headerfiles">
+            </th:block> /*/-->
+    <link rel="stylesheet" th:href="@{css/projectPage.css}">
+</head>
+<body >
+<!--The below section <header> pulls the fragment from fragments/general-->
+<header th:insert="fragments/general.html :: header"></header>
+
+<section>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+
+        let projectStart = /*[[${project.getStartDateAsLocalDateTime()}]]*/ 'default';
+        let projectId = /*[[${project.getId()}]]*/ 'default';
+        let projectEnd = /*[[${project.getEndDateAsLocalDateTime()}]]*/ 'default';
+        let eventNameLengthRestriction = /*[[${eventNameLengthRestriction}]]*/ 'default';
+        let titleRegex = /*[[${titleRegex.getPatternString()}]]*/ 'default';
+        let titleRegexMessage = /*[[${titleRegex.getRequirements()}]]*/ 'default';
+        let nextMilestoneNumber = /*[[${nextMilestoneNumber}]]*/ 'default';
+        let defaultOccasionStart = /*[[${defaultOccasionStart}]]*/ 'default';
+        let defaultMilestoneStart = /*[[${defaultMilestoneStart}]]*/ 'default';
+        let defaultOccasionEnd = /*[[${defaultOccasionEnd}]]*/ 'default';
+        /*]]>*/
+    </script>
+
+    <!--Below are the divs that handle error messages
+            If there is an attribute with either "errorMessage", "successMessage", or "infoMessage,
+            they will be displayed below-->
+    <div th:insert="fragments/general.html :: errorBox"></div>
+    <div th:insert="fragments/general.html :: successBox"></div>
+    <div th:insert="fragments/general.html :: infoBox"></div>
+    <!--/*@thymesVar id="project" type="nz.ac.canterbury.seng302.portfolio.model.domain.projects.Project"*/-->
+    <div class="projectPage">
+        <div class="projectRow">
+            <div class="projectColLeft">
+                <div class="projectDetails">
+                    <div id="project-details">
+                        <h1 id="projectId" style="display: none" th:text="${project.getId()}"></h1>
+                        <div class="mb3">
+                            <h1 id="projectName" th:text="${project.getName()}"></h1>
+                        </div>
+                        <div class="dateParentDiv">
+                            <div class="dateDiv">
+                                <p id="project-start-date" th:text="${project.getStartDateFormatted()}"></p>
+                                <p class="dateDivider">-</p>
+                                <p id="project-end-date" th:text="${project.getEndDateFormatted()}"></p>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <p id="projectDescription" th:text="${project.getDescription()}"></p>
+                        </div>
+                    </div>
+                    <div th:if="${userCanEdit == true}">
+                        <button class="btn btn-outline-success project-add-sprint-button authenticated-user" id="editProject">
+                            Edit Project
+                        </button>
+                        <button class="btn btn-outline-success project-add-sprint-button authenticated-user addSprint"
+                                id="projectAddSprint">
+                            Add Sprint
+                        </button>
+                        <div id="sprintAddInformationBar">
+                        </div>
+                    </div>
+                </div>
+                <div class="eventContainer">
+                    <div class="infoMessageParent alert alert-primary alert-dismissible fade show" id="informationBar"
+                         role="alert" style="display: none">
+                    </div>
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item">
+                            <button class="nav-link active" data-bs-target="#events" data-bs-toggle="tab" id="eventsTab"
+                                    role="tab">Events
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-target="#deadlines" data-bs-toggle="tab" id="deadlinesTab"
+                                    role="tab">Deadlines
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-target="#milestones" data-bs-toggle="tab" id="milestonesTab"
+                                    role="tab">Milestones
+                            </button>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="tabContent">
+                        <!---------------------------------------- Events tab  ------------------------------------------>
+                        <div class="tab-pane fade show active" id="events" role="tabpanel">
+                            <div class="mb-2 occasionAddButton">
+                                <button class="btn btn-outline-primary addOccasionButton addEventButton"
+                                        th:if="${userCanEdit == true}" type="button">
+                                    Create Event
+                                </button>
+                            </div>
+                            <div class="eventForm" style="display: none" th:if="${userCanEdit == true}">
+                                <form id="addEventForm">
+                                    <div class="mb-1">
+                                        <label class="form-label" for="eventName">Event name</label>
+                                        <!--/*@thymesVar id="titleRegex" type="nz.ac.canterbury.seng302.portfolio.service.RegexPattern"*/-->
+                                        <!--/*@thymesVar id="eventNameLengthRestriction" type="java.lang.Integer"*/-->
+                                        <input class="form-control form-control-sm" id="eventName"
+                                               name="eventName" required
+                                               th:maxlength="${eventNameLengthRestriction}"
+                                               th:pattern="${titleRegex.getPatternString()}"
+                                               th:title="${'Event title' + titleRegex.getRequirements()}"
+                                               type="text">
+                                        <small class="form-text-counted text-muted countChar">0 characters remaining</small>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label" for="exampleFormControlInput1">Type of event</label>
+                                        <select class="form-select typeOfEvent" id="exampleFormControlInput1">
+                                            <option selected value="1">Event</option>
+                                            <option value="2">Test</option>
+                                            <option value="3">Meeting</option>
+                                            <option value="4">Workshop</option>
+                                            <option value="5">Special Event</option>
+                                            <option value="6">Attention Required</option>
+                                        </select>
+                                    </div>
+                                    <div class="row mb-1">
+                                        <div class="col">
+                                            <label class="form-label" for="eventStart">Start</label>
+                                            <input class="form-control form-control-sm eventInputStartDate eventDateInput"
+                                                   id="eventStart"
+                                                   name="eventStart"
+                                                   required
+                                                   th:max="${project.getEndDateAsLocalDateTime()}"
+                                                   th:min="${project.getStartDateAsLocalDateTime()}"
+                                                   th:value="${defaultOccasionStart}"
+                                                   type="datetime-local">
+                                        </div>
+                                        <div class="col">
+                                            <label class="form-label" for="eventEnd">End</label>
+                                            <input class="form-control form-control-sm eventInputEndDate eventDateInput"
+                                                   id="eventEnd"
+                                                   name="eventEnd"
+                                                   required
+                                                   th:max="${project.getEndDateAsLocalDateTime()}"
+                                                   th:min="${project.getStartDateAsLocalDateTime()}"
+                                                   th:value="${defaultOccasionEnd}"
+                                                   type="datetime-local">
+                                        </div>
+                                    </div>
+                                    <div class="invalid-feedback">The event start must be before the event end</div>
+                                    <div class="mb-1">
+                                        <button class="btn btn-primary" id="eventSubmit" type="submit">Submit</button>
+                                        <button type="button" class="btn btn-secondary addEventButton" >Cancel</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div id="eventContainer" class="occasionContainer">
+                            </div>
+                        </div>
+                        <!--------------------------------------- Deadlines tab  ---------------------------------------->
+                        <div class="tab-pane fade show" id="deadlines" role="tabpanel">
+                            <div class="mb-2 occasionAddButton">
+                                <button class="btn btn-outline-primary addDeadlineButton addEventButton"
+                                        th:if="${userCanEdit == true}" type="button">
+                                    Create Deadline
+                                </button>
+                            </div>
+                            <div class="deadlineForm" style="display: none" th:if="${userCanEdit == true}">
+                                <form id="addDeadlineForm">
+                                    <div class="mb-1">
+                                        <label class="form-label" for="deadlineName">Deadline name</label>
+                                        <!--/*@thymesVar id="titleRegex" type="nz.ac.canterbury.seng302.portfolio.service.RegexPattern"*/-->
+                                        <!--/*@thymesVar id="eventNameLengthRestriction" type="java.lang.Integer"*/-->
+                                        <input class="form-control form-control-sm" id="deadlineName"
+                                               name="occasionName" required
+                                               th:maxlength="${eventNameLengthRestriction}"
+                                               th:pattern="${titleRegex.getPatternString()}"
+                                               th:title="${'Deadline title' + titleRegex.getRequirements()}"
+                                               type="text">
+                                        <small class="form-text-counted text-muted countChar">0 characters remaining</small>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label" for="exampleFormControlInput3">Type of deadline</label>
+                                        <select class="form-select typeOfDeadline" id="exampleFormControlInput3">
+                                            <option selected value="1">Event</option>
+                                            <option value="2">Test</option>
+                                            <option value="3">Meeting</option>
+                                            <option value="4">Workshop</option>
+                                            <option value="5">Special Event</option>
+                                            <option value="6">Attention Required</option>
+                                        </select>
+                                    </div>
+                                    <div class="row mb-1">
+                                        <div class="col">
+                                            <label class="form-label" for="deadlineEnd">End</label>
+                                            <input class="form-control form-control-sm deadlineInputEndDate"
+                                                   id="deadlineEnd"
+                                                   name="deadlineEnd"
+                                                   required
+                                                   th:max="${project.getEndDateAsLocalDateTime()}"
+                                                   th:min="${project.getStartDateAsLocalDateTime()}"
+                                                   th:value="${defaultOccasionStart}"
+                                                   type="datetime-local">
+                                        </div>
+                                    </div>
+                                    <div class="mb-1">
+                                        <button class="btn btn-primary" id="deadlineSubmit" type="submit">Submit</button>
+                                        <button type="button" class="btn btn-secondary addDeadlineButton" >Cancel</button>
+
+                                    </div>
+                                </form>
+                            </div>
+                            <div id="deadlineContainer" class="occasionContainer">
+
+                            </div>
+                        </div>
+                        <!--------------------------------------- Milestones tab  --------------------------------------->
+                        <div class="tab-pane fade show" id="milestones" role="tabpanel">
+                            <div class="mb-2 occasionAddButton">
+                                <button class="btn btn-outline-primary addMilestoneButton addOccasionButton"
+                                        th:if="${userCanEdit == true}" type="button">
+                                    Create Milestone
+                                </button>
+                            </div>
+
+                            <div class="milestoneForm" style="display: none" th:if="${userCanEdit == true}">
+                                <form>
+                                    <div class="mb-1">
+                                        <label class="form-label" for="milestoneName">Milestone name</label>
+                                        <!--/*@thymesVar id="titleRegex" type="nz.ac.canterbury.seng302.portfolio.service.RegexPattern"*/-->
+                                        <!--/*@thymesVar id="eventNameLengthRestriction" type="java.lang.Integer"*/-->
+                                        <input class="form-control form-control-sm" data-nextNumber="${nextMilestoneNumber}"
+                                               id="milestoneName"
+                                               name="milestoneName" required
+                                               th:maxlength="${eventNameLengthRestriction}"
+                                               th:pattern="${titleRegex.getPatternString()}"
+                                               th:title="${'Milestone title' + titleRegex.getRequirements()}"
+                                               type="text">
+                                        <small class="form-text-counted text-muted countChar">0 characters remaining</small>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label" for="exampleFormControlInput2">Type of milestone</label>
+                                        <select class="form-select typeOfMilestone" id="exampleFormControlInput2">
+                                            <option selected value="1">Event</option>
+                                            <option value="2">Test</option>
+                                            <option value="3">Meeting</option>
+                                            <option value="4">Workshop</option>
+                                            <option value="5">Special Event</option>
+                                            <option value="6">Attention Required</option>
+                                        </select>
+                                    </div>
+                                    <div class="row mb-1">
+                                        <div class="col">
+                                            <label class="form-label" for="milestoneEnd">End</label>
+                                            <input class="form-control form-control-sm milestoneInputEndDate"
+                                                   id="milestoneEnd"
+                                                   name="milestoneEnd"
+                                                   required
+                                                   th:max="${project.getEndDateAsLocalDateTime().toLocalDate()}"
+                                                   th:min="${project.getStartDateAsLocalDateTime().toLocalDate()}"
+                                                   th:value="${defaultMilestoneStart}"
+                                                   type="date">
+                                        </div>
+                                    </div>
+                                    <div class="mb-1">
+                                        <button class="btn btn-primary" id="milestoneSubmit" type="submit">Submit</button>
+                                        <button type="button" class="btn btn-secondary addMilestoneButton" >Cancel</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div id="milestoneContainer" class="occasionContainer">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="projectColRight">
+                <div class="sprintsContainer" style="display: none">
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+<div>
+    <svg class="waveBackground" viewBox="0 0 3840 2160" width="3840" height="2160" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"><rect x="0" y="0" width="3840" height="2160" fill="#001220"></rect><path d="M0 1393L64 1409.8C128 1426.7 256 1460.3 384 1472.2C512 1484 640 1474 768 1443.7C896 1413.3 1024 1362.7 1152 1365.8C1280 1369 1408 1426 1536 1448.3C1664 1470.7 1792 1458.3 1920 1470.8C2048 1483.3 2176 1520.7 2304 1511C2432 1501.3 2560 1444.7 2688 1395C2816 1345.3 2944 1302.7 3072 1287.3C3200 1272 3328 1284 3456 1298.5C3584 1313 3712 1330 3776 1338.5L3840 1347L3840 2161L3776 2161C3712 2161 3584 2161 3456 2161C3328 2161 3200 2161 3072 2161C2944 2161 2816 2161 2688 2161C2560 2161 2432 2161 2304 2161C2176 2161 2048 2161 1920 2161C1792 2161 1664 2161 1536 2161C1408 2161 1280 2161 1152 2161C1024 2161 896 2161 768 2161C640 2161 512 2161 384 2161C256 2161 128 2161 64 2161L0 2161Z" fill="#264653"></path><path d="M0 1548L64 1538.5C128 1529 256 1510 384 1495.3C512 1480.7 640 1470.3 768 1452.3C896 1434.3 1024 1408.7 1152 1431.2C1280 1453.7 1408 1524.3 1536 1567.3C1664 1610.3 1792 1625.7 1920 1628.8C2048 1632 2176 1623 2304 1624.3C2432 1625.7 2560 1637.3 2688 1623.3C2816 1609.3 2944 1569.7 3072 1527.5C3200 1485.3 3328 1440.7 3456 1457.7C3584 1474.7 3712 1553.3 3776 1592.7L3840 1632L3840 2161L3776 2161C3712 2161 3584 2161 3456 2161C3328 2161 3200 2161 3072 2161C2944 2161 2816 2161 2688 2161C2560 2161 2432 2161 2304 2161C2176 2161 2048 2161 1920 2161C1792 2161 1664 2161 1536 2161C1408 2161 1280 2161 1152 2161C1024 2161 896 2161 768 2161C640 2161 512 2161 384 2161C256 2161 128 2161 64 2161L0 2161Z" fill="#215e66"></path><path d="M0 1530L64 1563C128 1596 256 1662 384 1696.8C512 1731.7 640 1735.3 768 1699C896 1662.7 1024 1586.3 1152 1548.8C1280 1511.3 1408 1512.7 1536 1539.7C1664 1566.7 1792 1619.3 1920 1643.3C2048 1667.3 2176 1662.7 2304 1633C2432 1603.3 2560 1548.7 2688 1561C2816 1573.3 2944 1652.7 3072 1670.7C3200 1688.7 3328 1645.3 3456 1647.8C3584 1650.3 3712 1698.7 3776 1722.8L3840 1747L3840 2161L3776 2161C3712 2161 3584 2161 3456 2161C3328 2161 3200 2161 3072 2161C2944 2161 2816 2161 2688 2161C2560 2161 2432 2161 2304 2161C2176 2161 2048 2161 1920 2161C1792 2161 1664 2161 1536 2161C1408 2161 1280 2161 1152 2161C1024 2161 896 2161 768 2161C640 2161 512 2161 384 2161C256 2161 128 2161 64 2161L0 2161Z" fill="#297770"></path><path d="M0 1642L64 1670C128 1698 256 1754 384 1768.7C512 1783.3 640 1756.7 768 1743.8C896 1731 1024 1732 1152 1729.8C1280 1727.7 1408 1722.3 1536 1718.5C1664 1714.7 1792 1712.3 1920 1694.8C2048 1677.3 2176 1644.7 2304 1635.2C2432 1625.7 2560 1639.3 2688 1660C2816 1680.7 2944 1708.3 3072 1709.8C3200 1711.3 3328 1686.7 3456 1688.3C3584 1690 3712 1718 3776 1732L3840 1746L3840 2161L3776 2161C3712 2161 3584 2161 3456 2161C3328 2161 3200 2161 3072 2161C2944 2161 2816 2161 2688 2161C2560 2161 2432 2161 2304 2161C2176 2161 2048 2161 1920 2161C1792 2161 1664 2161 1536 2161C1408 2161 1280 2161 1152 2161C1024 2161 896 2161 768 2161C640 2161 512 2161 384 2161C256 2161 128 2161 64 2161L0 2161Z" fill="#488f70"></path><path d="M0 1791L64 1809.3C128 1827.7 256 1864.3 384 1868.2C512 1872 640 1843 768 1824.7C896 1806.3 1024 1798.7 1152 1809.3C1280 1820 1408 1849 1536 1839.7C1664 1830.3 1792 1782.7 1920 1771C2048 1759.3 2176 1783.7 2304 1800C2432 1816.3 2560 1824.7 2688 1837.5C2816 1850.3 2944 1867.7 3072 1858.7C3200 1849.7 3328 1814.3 3456 1787.3C3584 1760.3 3712 1741.7 3776 1732.3L3840 1723L3840 2161L3776 2161C3712 2161 3584 2161 3456 2161C3328 2161 3200 2161 3072 2161C2944 2161 2816 2161 2688 2161C2560 2161 2432 2161 2304 2161C2176 2161 2048 2161 1920 2161C1792 2161 1664 2161 1536 2161C1408 2161 1280 2161 1152 2161C1024 2161 896 2161 768 2161C640 2161 512 2161 384 2161C256 2161 128 2161 64 2161L0 2161Z" fill="#75a56a"></path><path d="M0 1902L64 1900.7C128 1899.3 256 1896.7 384 1914.2C512 1931.7 640 1969.3 768 1960.2C896 1951 1024 1895 1152 1871.7C1280 1848.3 1408 1857.7 1536 1878.3C1664 1899 1792 1931 1920 1945C2048 1959 2176 1955 2304 1943.8C2432 1932.7 2560 1914.3 2688 1920.2C2816 1926 2944 1956 3072 1957C3200 1958 3328 1930 3456 1910.8C3584 1891.7 3712 1881.3 3776 1876.2L3840 1871L3840 2161L3776 2161C3712 2161 3584 2161 3456 2161C3328 2161 3200 2161 3072 2161C2944 2161 2816 2161 2688 2161C2560 2161 2432 2161 2304 2161C2176 2161 2048 2161 1920 2161C1792 2161 1664 2161 1536 2161C1408 2161 1280 2161 1152 2161C1024 2161 896 2161 768 2161C640 2161 512 2161 384 2161C256 2161 128 2161 64 2161L0 2161Z" fill="#acb764"></path><path d="M0 2052L64 2052C128 2052 256 2052 384 2052.3C512 2052.7 640 2053.3 768 2058.5C896 2063.7 1024 2073.3 1152 2068.5C1280 2063.7 1408 2044.3 1536 2040.7C1664 2037 1792 2049 1920 2053.8C2048 2058.7 2176 2056.3 2304 2056.2C2432 2056 2560 2058 2688 2059.3C2816 2060.7 2944 2061.3 3072 2052.2C3200 2043 3328 2024 3456 2020.3C3584 2016.7 3712 2028.3 3776 2034.2L3840 2040L3840 2161L3776 2161C3712 2161 3584 2161 3456 2161C3328 2161 3200 2161 3072 2161C2944 2161 2816 2161 2688 2161C2560 2161 2432 2161 2304 2161C2176 2161 2048 2161 1920 2161C1792 2161 1664 2161 1536 2161C1408 2161 1280 2161 1152 2161C1024 2161 896 2161 768 2161C640 2161 512 2161 384 2161C256 2161 128 2161 64 2161L0 2161Z" fill="#e9c46a"></path></svg></div>
+</body>
+
+<script th:src="@{js/notifications.js}" type="application/javascript"></script>
+<script th:src="@{js/events.js}" type="application/javascript"></script>
+<script th:src="@{js/project.js}" type="application/javascript"></script>
+
+</html>

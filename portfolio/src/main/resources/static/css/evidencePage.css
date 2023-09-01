@@ -1,0 +1,280 @@
+.evidenceTitle {
+    text-align: center;
+    padding-top: 2rem;
+    margin-right: 2rem;
+}
+
+.evidenceContainer {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    padding-top: 1rem;
+}
+
+.evidencePage {
+    display: flex;
+    flex-direction: row
+}
+
+#evidenceDetailsContainer {
+    padding: 1rem 2rem 2rem;
+    margin-right: 2rem;
+    width: auto;
+    height: 700px;
+    overflow-y: scroll;
+}
+
+.evidenceDetailsDate {
+    color: var(--secondary-text-colour-darker);
+    font-weight: lighter;
+}
+
+#evidenceDetailsSkills {
+    bottom: 4rem;
+    position: absolute;
+}
+
+#evidenceDetailsLinkedUsers {
+    word-break: break-word;
+    padding-left: 0.5rem;
+}
+
+.evidenceDetailsHeader {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.evidenceListContainer {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    max-width: 30%;
+    padding-right: 0;
+    padding-left: 0;
+}
+
+.evidenceListMenu, .evidenceList {
+    align-self: center;
+}
+
+.evidenceListTitle {
+    text-align: center;
+    padding: inherit;
+    margin-bottom: 0;
+}
+
+#evidenceList {
+    height: 700px;
+    overflow-y: scroll;
+    margin-right: 2rem;
+    border-radius: var(--border-radius);
+}
+
+.evidenceListItem {
+    margin-bottom: 1rem;
+    margin-right: 1rem;
+    padding: 1rem;
+    border-radius: var(--border-radius);
+}
+
+.evidenceListItemTitle {
+    font-weight: bold;
+}
+
+.evidenceListItemDate {
+    color: var(--secondary-text-colour-darker);
+    font-weight: lighter;
+    text-align: end;
+}
+
+.evidenceFormName, .evidenceFormDate, .evidenceFormDescription {
+    padding-bottom: 1.5rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+
+#evidenceFormCategories {
+    padding: 1.5rem;
+}
+
+.evidenceFormCategoryButton {
+    height: 3rem;
+    align-items: center;
+    min-width: 10rem;
+    padding-left: 1.2rem;
+    transition: 0.5s ease-in-out;
+}
+
+.evidenceCategoryTickIcon {
+    margin-left: 1rem;
+    font-size: 1.2rem;
+    display: none
+}
+
+.evidenceFormSkills {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+
+.selectedEvidence {
+    background-color: #eaeaea;
+}
+
+#addOrEditEvidenceModal {
+    display: none;
+    position: fixed;
+    z-index: 5;
+    padding-top: 100px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.evidenceFormButton {
+    margin-top: 0.5rem;
+    margin-right: 1.5rem;
+    max-width: fit-content;
+    align-self: self-end;
+}
+
+.skillSideBar {
+    width: 15%;
+    height: 100%;
+    overflow-y: scroll;
+    margin-left: 2rem;
+}
+
+.categoriesHeader, .skillsHeader {
+    margin-top: 2rem;
+    color: var(--background-colour-offblue);
+}
+
+.evidencePreviewTags, #evidenceDetailsSkills {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.chip {
+    padding: 0.2rem 1rem 0.2rem;
+    position: relative;
+    margin: 0.2rem;
+    border-radius: var(--border-radius);
+    display: flex;
+    flex-direction: row;
+    box-shadow: rgba(60, 64, 67, 0.3) 0 1px 2px 0, rgba(60, 64, 67, 0.15) 0 1px 3px 1px;
+}
+
+.skillChip {
+    background-color: var(--skill-chip-colour);
+}
+
+.categoryChip {
+    background-color: var(--category-chip-colour);
+}
+
+.chip:hover {
+    cursor: pointer;
+    filter: contrast(80%);
+}
+
+.skillChipInvalid {
+    color: #ee3636;
+}
+
+#skillChipDisplay {
+    justify-content: left;
+}
+
+.tagInputContainer {
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: row;
+    padding: 0.5rem;
+    flex-wrap: wrap;
+    min-height: 3.7rem;
+}
+
+#tagInputChips {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.noDisplayInput {
+    flex: 1;
+    outline: none;
+    border: 0;
+    background: transparent;
+}
+
+.chipText {
+    margin: auto;
+    text-align: center;
+    word-break: break-word;
+}
+
+.chipDelete {
+    position: absolute;
+    top: -0.2rem;
+    right: -0.2rem;
+}
+
+.chip.selected {
+    filter: contrast(70%);
+}
+
+.chipDelete:hover {
+    cursor: pointer;
+    color: red;
+}
+
+.skillSideBar h3 {
+    text-align: center;
+}
+
+.evidenceContainerButtons{
+    position: absolute;
+    left: 1rem;
+    top: 2rem;
+    margin-top: 0;
+}
+
+#showAllEvidence{
+    color: #b5d1fb;
+}
+
+#createEvidenceButton{
+    color: #b5d1fb;
+}
+
+
+
+.deleteLinkedUserButton{
+    height: 2rem;
+    width: 2rem;
+    text-align: center;
+    border: none;
+    color: black;
+    background : transparent;
+}
+
+.deleteLinkedUserButton:hover{
+    color: red;
+}
+
+#linkedUserElement {
+    display : flex;
+    align-items: center;
+}
+
+#evidenceSkillFeedback {
+    white-space: pre-wrap;
+}

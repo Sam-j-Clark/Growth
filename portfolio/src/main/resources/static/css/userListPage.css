@@ -1,0 +1,100 @@
+/*User-list*/
+section{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
+}
+.listTableDiv {
+    overflow-y: scroll;
+    display: flex;
+    width: 80%;
+    flex-direction: column;
+    padding: 2rem;
+    word-break: break-word;
+    background-color: var(--background-colour-offblue);
+    border-radius: var(--border-radius);
+}
+
+.title {
+    align-self: center;
+}
+
+.listTableFooter {
+    align-self: center;
+}
+
+.listTable a {
+    text-decoration: none;
+    color: var(--main-text-color);
+}
+
+.roleButtonsContainer {
+    display: flex;
+    flex-direction: row;
+    min-width: 25rem;
+}
+
+.evidenceContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: auto;
+}
+
+
+.tableStyled {
+    border-collapse: collapse;
+    font-size: 1rem;
+    min-width: 60rem;
+    table-layout: fixed;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.tableHead {
+    width: 15%;
+}
+
+.tableStyled th, .tableStyled td {
+    padding: 1rem
+}
+
+.tableStyled thead tr {
+    border-radius: var(--border-radius);
+    background-color: var(--navbar-colour);
+    text-align: left;
+}
+
+.tableStyled thead tr a {
+    color: #f9f9f9;
+}
+
+.tableStyled tbody tr {
+    border-bottom: 1px solid #dddddd;
+}
+
+.tableStyled tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+
+.tableStyled tbody tr:last-of-type {
+    border-bottom: 2px solid #000000;
+}
+
+.userRoleRow:hover :not(.roleButtonsContainer) {
+    cursor: pointer;
+}
+
+.groupAmountSelectorDivUserList {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: baseline;
+    width: 20rem;
+    padding: 1rem;
+}
+
+.userListAmount{
+    width: 10rem;
+}
