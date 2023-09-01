@@ -1,6 +1,26 @@
 # Seng302 Team 600 Project
 
-An application for use in project courses such as SENG302
+
+### Background
+
+This project is was produced by a team of seven third year university software students.
+
+An application for use in project courses such as SENG302. It allows you to manage upcoming deadline and events and create a portfolio of skills to present and show your growth throughout the course.
+
+#### Key Learnings
+
+ - Understanding and experience of Agile software development and working in a scrum team.
+ - Exposure to gRPC and microservice architecture.
+ - Learning about server side rendering and how not to write web applications.
+ - Understanding of technical debt as this was my first proejct which spanned over a longer period than 8 weeks.
+
+#### Project reflection
+This course was one of my best experiences for my software engineering career, as I learned how project development worked as part of an agile software team. However, unfortunately due to the amount I learnt while working on this project I am not particularly proud of the product itself, as it still contains serious technical debt that came about as a result of the teams lack of experience. In saying that this project is living evidence of how far we came.
+
+
+----
+
+## Project Readme
 
 ### Uses external dependencies:
  - `Bootstrap`
@@ -77,45 +97,6 @@ gradlew bootRun
 
 By default, the Portfolio will run on local port 9000 (`http://localhost:9000`)
 
-## Login Details
-
-**Admin account**
-
-username: admin
-
-password: password
-
-**Teacher account**
-
-username: steve
-
-password: password
-
-**Student account**
-
-username: Robert.abe1989
-
-password: thib2eCuTh
-
-## Contributors
-
-- Frederik Markwell (fma107)
-- Aidan Campbell (aca170)
-- Sam Clark (scl113)
-- Oliver Johnson (ojo26)
-- April Clarke (abc56)
-- Dongjin Zhou (dzh80)
-- Daniel Pallesen (dpa107)
-- Harrison Martin (hma112)
-- SENG302 teaching team
-
 ## LICENSE
 
 [GNU GENERAL PUBLIC LICENSE](https://www.gnu.org/licenses/gpl-3.0.en.html)
-
-## References
-
-- [Spring Boot Docs](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/)
-- [Spring JPA docs](https://docs.spring.io/spring-data/jpa/docs/current/reference/html/)
-- [Thymeleaf Docs](https://www.thymeleaf.org/documentation.html)
-- [Learn resources](https://learn.canterbury.ac.nz/course/view.php?id=13269&section=9)
